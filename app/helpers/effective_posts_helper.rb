@@ -1,0 +1,2 @@
+module EffectivePostsHelper
+end

@@ -1,0 +1,19 @@
+= simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.admin_post_path(post.id) : effective_posts.admin_posts_path))) do |f|
+  = f.input :title, :hint => "Give this post a title"
+  = f.input :categories, :collection => EffectivePosts.categories, :as => :select
+
+  %h4 Publish
+  = f.input :draft, :hint => "Save this post as a draft.  It will not be accessible on the website."
+  = f.input :published_at, :hint => "Set this to a future date to schedule a post to appear in the future."
+
+  - if defined?(EffectiveRoles) and f.object.respond_to?(:roles)
+    = f.input :roles, :collection => EffectiveRoles.roles_collection(f.object), :as => :check_boxes, :hint => '* leave blank for a regular public post that anyone can view'
+
+  .form-group
+    .col-xs-12
+      .form-group
+        .pull-right
+          = f.button :submit, 'Save'
+          - if defined?(EffectiveRegions)
+            = f.button :submit, 'Save and Edit Content'
+          = link_to 'Cancel', effective_posts.admin_posts_path
