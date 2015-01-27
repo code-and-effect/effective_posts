@@ -23,7 +23,7 @@ module Effective
     end
 
     scope :drafts, -> { where(:draft => true) }
-    scope :published, -> { where(:draft => false) }
+    scope :published, -> { where(:draft => false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
     scope :with_category, proc { |category| where(:category => category.to_s.downcase) }
 
     def to_param

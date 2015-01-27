@@ -17,6 +17,9 @@ EffectivePosts.setup do |config|
   # Regardless of this setting, posts will always be available via /posts?category=blog
   config.use_category_routes = true
 
+  # Display how many per page? (Kaminari)
+  config.per_page = 2
+
   # Use CanCan: authorize!(action, resource)
   # Use effective_roles:  resource.roles_match_with?(current_user)
   config.authorization_method = Proc.new { |controller, action, resource| true }

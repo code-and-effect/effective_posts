@@ -1,5 +1,6 @@
-require "effective_posts/engine"
+require 'kaminari'
 require 'migrant'     # Required for rspec to run properly
+require "effective_posts/engine"
 
 module EffectivePosts
   mattr_accessor :posts_table_name
@@ -10,6 +11,8 @@ module EffectivePosts
 
   mattr_accessor :categories
   mattr_accessor :use_category_routes
+
+  mattr_accessor :per_page
 
   def self.setup
     yield self
