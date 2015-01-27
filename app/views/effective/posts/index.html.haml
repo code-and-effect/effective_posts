@@ -1,3 +1,4 @@
-= render :partial => @posts, :spacer_template => 'spacer'
+.effective-posts
+  = render :partial => @posts, :spacer_template => 'spacer'
 
-= paginate @posts
+%nav= paginate @posts
