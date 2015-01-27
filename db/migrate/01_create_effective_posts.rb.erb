@@ -4,12 +4,12 @@ class CreateEffectivePosts < ActiveRecord::Migration
       t.integer :user_id
 
       t.string :title
+      t.string :category
 
       t.boolean :draft, :default => false
 
       t.text :tags
 
-      t.integer :categories_mask, :default => 0
       t.integer :roles_mask, :default => 0
 
       t.datetime :published_at

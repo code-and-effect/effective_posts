@@ -9,38 +9,27 @@ module Effective
 
     structure do
       title             :string, :validates => [:presence]
+      category          :string, :validates => [:presence]
+
       published_at      :datetime, :validates => [:presence]
 
       draft             :boolean, :default => false
 
       tags              :text
 
-      categories_mask   :integer, :default => 0
       roles_mask        :integer, :default => 0
-
 
       timestamps
     end
 
     scope :drafts, -> { where(:draft => true) }
     scope :published, -> { where(:draft => false) }
-    scope :with_category, lambda { |*categories| where(with_categories_sql(categories)) }
+    scope :with_category, proc { |category| where(:category => category.to_s.downcase) }
 
-    def self.with_categories_sql(*categories)
-      categories = categories.flatten.compact
-      categories = categories.first.try(:categories) if categories.length == 1 and categories.first.respond_to?(:categories)
-
-      categories = (categories.map { |category| category.to_sym } & EffectivePosts.categories)
-      categories.map { |role| "(#{self.table_name}.categories_mask & %d > 0)" % 2**EffectivePosts.categories.index(role) }.join(' OR ')
+    def to_param
+      "#{id}-#{title.parameterize}"
     end
 
-    def categories=(categories)
-      self.categories_mask = (categories.map(&:to_sym) & EffectivePosts.categories).map { |r| 2**EffectivePosts.categories.index(r) }.sum
-    end
-
-    def categories
-      EffectivePosts.categories.reject { |r| ((categories_mask || 0) & 2**EffectivePosts.categories.index(r)).zero? }
-    end
   end
 
 end

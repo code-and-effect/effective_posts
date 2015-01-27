@@ -1,0 +1,10 @@
+.effective-post
+  %h2.post-title
+    = simple_effective_region @post, :title do
+      = @post.title
+
+  %p.post-meta= post_meta(@post)
+
+  = effective_region @post, :content do
+    %p Default content
+

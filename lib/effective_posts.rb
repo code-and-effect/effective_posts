@@ -9,6 +9,7 @@ module EffectivePosts
   mattr_accessor :layout
 
   mattr_accessor :categories
+  mattr_accessor :use_category_routes
 
   def self.setup
     yield self
@@ -20,5 +21,4 @@ module EffectivePosts
     end
     true
   end
-
 end

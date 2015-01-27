@@ -12,7 +12,7 @@ module Admin
     end
 
     def new
-      @post = Effective::Post.new()
+      @post = Effective::Post.new(:published_at => Time.zone.now)
       @page_title = 'New Post'
 
       EffectivePosts.authorized?(self, :new, @post)
@@ -20,13 +20,15 @@ module Admin
 
     def create
       @post = Effective::Post.new(post_params)
+      @post.user = current_user if defined?(current_user)
+
       @page_title = 'New Post'
 
       EffectivePosts.authorized?(self, :create, @post)
 
       if @post.save
         if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
-          redirect_to effective_regions.edit_path(effective_posts.post_path(@post))
+          redirect_to effective_regions.edit_path(effective_posts.post_path(@post), :exit => effective_posts.edit_admin_post_path(@post))
         else
           flash[:success] = 'Successfully created post'
           redirect_to effective_posts.edit_admin_post_path(@post)
@@ -81,7 +83,7 @@ module Admin
 
     def post_params
       params.require(:effective_post).permit(
-        :title, :draft, :roles => []
+        :title, :draft, :category, :published_at, :roles => []
       )
     end
 

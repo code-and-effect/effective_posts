@@ -1,21 +1,19 @@
-class EffectivePostsRoutingConstraint
-  def self.matches?(request)
-    id = request.path_parameters[:id] || '/'
-    Effective::Post.find(id).present? rescue false
-  end
-end
-
 EffectivePosts::Engine.routes.draw do
-  if defined?(EffectiveDatatables)
-    namespace :admin do
-      resources :posts, :except => [:show]
-      resources :menus, :except => [:show]
-    end
+  namespace :admin do
+    resources :posts, :except => [:show]
   end
 
   scope :module => 'effective' do
-    get '*id' => "posts#show", :constraints => EffectivePostsRoutingConstraint, :as => :post
+    resources :posts, :only => [:index, :show]
+
+    if EffectivePosts.use_category_routes
+      EffectivePosts.categories.each do |category|
+        match "#{category}", :to => 'posts#index', :via => [:get], :defaults => {:category => category.to_s }
+        match "#{category}/:id", :to => 'posts#show', :via => [:get], :defaults => {:category => category.to_s }
+      end
+    end
   end
+
 end
 
 # Automatically mount the engine as an append
@@ -24,5 +22,3 @@ Rails.application.routes.append do
     mount EffectivePosts::Engine => '/', :as => 'effective_posts'
   end
 end
-
-#root :to => 'Effective::Posts#show', :id => 'home'

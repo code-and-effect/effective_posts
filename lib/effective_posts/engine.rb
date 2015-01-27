@@ -5,6 +5,7 @@ module EffectivePosts
     # Include Helpers to base application
     initializer 'effective_posts.action_controller' do |app|
       ActiveSupport.on_load :action_controller do
+        helper EffectiveTruncateHtmlHelper
         helper EffectivePostsHelper
       end
     end

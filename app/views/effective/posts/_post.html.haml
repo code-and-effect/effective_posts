@@ -1,0 +1,11 @@
+.effective-post
+  %h2.post-title
+    %a{:href => effective_post_path(post)}
+      = simple_effective_region post, :title, :editable => false do
+        = post.title
+
+  %p.post-meta= post_meta(post)
+
+  -# = truncate_html(effective_region(post, :content, :editable => false) { "<p>No content</p>".html_safe }, 210, '...', link_to('read more', effective_posts.post_path(post)))
+
+  = chunk_html(effective_region(post, :content, :editable => false) { "<p>No content</p>".html_safe }, 2, '...', link_to('read more', effective_posts.post_path(post)))
