@@ -17,8 +17,13 @@ EffectivePosts.setup do |config|
   # Regardless of this setting, posts will always be available via /posts?category=blog
   config.use_category_routes = true
 
-  # Display how many per page? (Kaminari)
-  config.per_page = 2
+  # Number of posts displayed per page (Kaminari)
+  config.per_page = 10
+
+  # Post Meta behaviour
+  # Should the author be displayed in the post meta?
+  # The author is the user that created the Effective::Post object
+  config.post_meta_author = true
 
   # Use CanCan: authorize!(action, resource)
   # Use effective_roles:  resource.roles_match_with?(current_user)

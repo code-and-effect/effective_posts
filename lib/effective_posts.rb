@@ -13,6 +13,7 @@ module EffectivePosts
   mattr_accessor :use_category_routes
 
   mattr_accessor :per_page
+  mattr_accessor :post_meta_author
 
   def self.setup
     yield self

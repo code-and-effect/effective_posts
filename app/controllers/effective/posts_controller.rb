@@ -18,7 +18,7 @@ module Effective
       @posts = @posts.order("#{EffectivePosts.posts_table_name}.published_at DESC")
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
 
-      EffectivePosts.authorized?(self, :index, @posts)
+      EffectivePosts.authorized?(self, :index, Effective::Post)
 
       @page_title = (params[:category] || 'Posts').titleize
     end
