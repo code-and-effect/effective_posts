@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.add_dependency "kaminari"
   s.add_dependency "migrant"
   s.add_dependency "simple_form"
-  s.add_dependency "effective_ckeditor", '>= 1.1.0'
-  s.add_dependency "effective_regions", '>= 1.2.0'
+  s.add_dependency "effective_ckeditor", '>= 1.2.0'
+  s.add_dependency "effective_regions", '>= 1.2.2'
 
   # s.add_development_dependency "sqlite3"
 
