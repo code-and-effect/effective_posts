@@ -8,6 +8,8 @@ EffectivePosts::Engine.routes.draw do
 
     if EffectivePosts.use_category_routes
       EffectivePosts.categories.each do |category|
+        next if category.to_s == 'posts'
+
         match "#{category}", :to => 'posts#index', :via => [:get], :defaults => {:category => category.to_s }
         match "#{category}/:id", :to => 'posts#show', :via => [:get], :defaults => {:category => category.to_s }
       end
