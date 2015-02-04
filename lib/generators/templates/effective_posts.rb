@@ -3,9 +3,8 @@
 EffectivePosts.setup do |config|
   config.posts_table_name = :posts
 
-  # Every post must belong to one or more category
-  # Only add to the end of this array.  Never prepend categories.
-  # Don't include :posts
+  # Every post must belong to one or more category.
+  # Don't use the category :posts
   config.categories = [:blog, :news]
 
   # Create top level routes for each category
