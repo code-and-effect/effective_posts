@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Code and Effect"]
   s.email       = ["info@codeandeffect.com"]
   s.homepage    = "https://github.com/code-and-effect/effective_posts"
-  s.summary     = "CRUD Posts with intention to work with EffectiveRegions. WIP."
-  s.description = "CRUD Posts with intention to work with EffectiveRegions. WIP."
+  s.summary     = "A blog implementation with WYSIWYG content editing, post scheduling, pagination and optional top level routes for each post category."
+  s.description = "A blog implementation with WYSIWYG content editing, post scheduling, pagination and optional top level routes for each post category."
   s.licenses    = ['MIT']
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
