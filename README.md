@@ -75,7 +75,7 @@ Use `link_to_post_category(:blog)` to display a link to the Blog page.  The help
 
 The [kaminari](https://github.com/amatsuda/kaminari) gem is used for pagination on all posts#index type screens.
 
-The posts-per-page setting can be configred in the `/app/config/initializers/effective_posts.rb` initializer.
+The per_page for posts may be configured via the `/app/config/initializers/effective_posts.rb` initializer.
 
 Included within this gem is the bootstrap3 theme for kaminari, but, as with any gem, your app-specific kaminari views will take priority over these included views.
 
@@ -143,7 +143,7 @@ can [:manage], Effective::Post if user.is?(:admin)
 
 ## Future Plans
 
-There are some obvious additional features that have yet to be added:
+There are some obvious additional features that have yet to be implemented:
 
 - Tagging
 - Some kind of helper for displaying a sidebar for the categories
