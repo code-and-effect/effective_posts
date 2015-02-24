@@ -7,13 +7,10 @@ module Effective
     def index
       @posts = (Rails::VERSION::MAJOR > 3 ? Effective::Post.all : Effective::Post.scoped)
 
-      if defined?(EffectiveRoles) && (current_user.respond_to?(:roles) rescue false)
-        @posts = @posts.for_role(current_user.roles)
-      end
-
-      @posts = @posts.includes(:regions)
+      @posts = @posts.for_role(current_user.try(:roles)) if defined?(EffectiveRoles)
       @posts = @posts.with_category(params[:category]) if params[:category]
       @posts = @posts.published
+      @posts = @posts.includes(:regions)
 
       @posts = @posts.order("#{EffectivePosts.posts_table_name}.published_at DESC")
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
@@ -26,13 +23,10 @@ module Effective
     def show
       @posts = (Rails::VERSION::MAJOR > 3 ? Effective::Post.all : Effective::Post.scoped)
 
-      if defined?(EffectiveRoles) && (current_user.respond_to?(:roles) rescue false)
-        @posts = @posts.for_role(current_user.roles)
-      end
-
-      @posts = @posts.includes(:regions)
+      @posts = @posts.for_role(current_user.try(:roles)) if defined?(EffectiveRoles)
       @posts = @posts.with_category(params[:category]) if params[:category]
       @posts = @posts.published if params[:edit].to_s != 'true'
+      @posts = @posts.includes(:regions)
 
       @post = @posts.find(params[:id])
 

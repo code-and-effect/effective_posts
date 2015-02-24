@@ -25,7 +25,7 @@ EffectivePosts.setup do |config|
   config.post_meta_author = true
 
   # Use CanCan: authorize!(action, resource)
-  # Use effective_roles:  resource.roles_match_with?(current_user)
+  # Use effective_roles:  resource.roles_permit?(current_user)
   config.authorization_method = Proc.new { |controller, action, resource| true }
 
   # Layout Settings
