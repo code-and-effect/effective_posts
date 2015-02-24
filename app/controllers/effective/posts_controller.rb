@@ -23,12 +23,15 @@ module Effective
     def show
       @posts = (Rails::VERSION::MAJOR > 3 ? Effective::Post.all : Effective::Post.scoped)
 
-      @posts = @posts.for_role(current_user.try(:roles)) if defined?(EffectiveRoles)
       @posts = @posts.with_category(params[:category]) if params[:category]
       @posts = @posts.published if params[:edit].to_s != 'true'
       @posts = @posts.includes(:regions)
 
       @post = @posts.find(params[:id])
+
+      if defined?(EffectiveRoles)
+        raise Effective::AccessDenied unless @post.roles_permit?(current_user)
+      end
 
       EffectivePosts.authorized?(self, :show, @post)
 
