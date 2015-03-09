@@ -6,8 +6,8 @@ module EffectivePostsHelper
   def post_meta(post)
     [
       "Published",
-      "on #{post.published_at.strftime("%d-%b-%Y %l:%M %p")}",
-      ("to #{link_to_post_category(post.category)}" if Array(EffectivePosts.categories).length > 0),
+      "on #{post.published_at.strftime("%B %d, %Y at %l:%M %p")}",
+      ("to #{link_to_post_category(post.category)}" if Array(EffectivePosts.categories).length > 1),
       ("by #{post.user.to_s.presence || 'Unknown'}" if EffectivePosts.post_meta_author)
     ].compact.join(' ').html_safe
   end
