@@ -25,7 +25,7 @@ module EffectivePostsHelper
 
     cut_off_limit = only_divider_pos_present || divider_pos_less_than_length ? divider_pos : length
 
-    content = truncate(strip_tags(content), length: cut_off_limit, escape: false, separator: ' ')
+    content = truncate_html(content, cut_off_limit)
     (content + readmore_link(post, options)).html_safe
   end
 
