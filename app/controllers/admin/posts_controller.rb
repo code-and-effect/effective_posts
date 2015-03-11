@@ -54,7 +54,7 @@ module Admin
 
       if @post.update_attributes(post_params)
         if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
-          redirect_to effective_regions.edit_path(effective_posts.post_path(@post))
+          redirect_to effective_regions.edit_path(effective_posts.post_path(@post), :exit => effective_posts.edit_admin_post_path(@post))
         else
           flash[:success] = 'Successfully updated post'
           redirect_to effective_posts.edit_admin_post_path(@post)
