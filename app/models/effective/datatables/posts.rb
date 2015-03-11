@@ -2,9 +2,10 @@ if defined?(EffectiveDatatables)
   module Effective
     module Datatables
       class Posts < Effective::Datatable
-        table_column :published_at
+        default_order :published_at, :desc
 
-        table_column :id
+        table_column :published_at
+        table_column :id, :visible => false
 
         table_column :title
         table_column :category, :filter => {:type => :select, :values => EffectivePosts.categories }
