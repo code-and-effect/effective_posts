@@ -8,7 +8,7 @@ module Effective
     belongs_to :user
 
     structure do
-      title             :string, :validates => [:presence]
+      title             :string, :validates => [:presence, :length => {:maximum => 255}]
       category          :string, :validates => [:presence]
 
       published_at      :datetime, :validates => [:presence]
