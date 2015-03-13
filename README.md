@@ -70,6 +70,8 @@ If disabled, all posts will be available at `/posts`, with posts for a specific 
 
 Use `link_to_post_category(:blog)` to display a link to the Blog page.  The helper considers `config.use_category_routes` and puts in the correct url.
 
+Use `post_excerpt(post)` to display the excerpt for a post.  Or `post_excerpt(post, :length => 200)` to truncate it and add a Read more link where appropriate.
+
 
 ## Pagination
 
