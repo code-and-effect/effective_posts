@@ -15,18 +15,16 @@ module EffectivePostsHelper
   def post_excerpt(post, options = {})
     content = effective_region(post, :content) { '<p>Default content</p>'.html_safe }
 
+    divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
     length = options.delete(:length)
-    divider_pos = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
 
-    return content if (length.nil? && divider_pos.nil?) || (length.present? && divider_pos.nil? && content.length < length)
-
-    only_divider_pos_present = length.nil? && divider_pos.present?
-    divider_pos_less_than_length = length.present? && divider_pos.present? && divider_pos < length
-
-    cut_off_limit = only_divider_pos_present || divider_pos_less_than_length ? divider_pos : length
-
-    content = truncate_html(content, cut_off_limit)
-    (content + readmore_link(post, options)).html_safe
+    if divider.present?
+      content[0...divider] + readmore_link(post, options)
+    elsif length.present? && content.length > length
+      truncate_html(content, length, '...', readmore_link(post, options))
+    else
+      content
+    end.html_safe
   end
 
   def link_to_post_category(category, options = {})
@@ -43,7 +41,7 @@ module EffectivePostsHelper
 
   def readmore_link(post, options)
     content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more...'), effective_posts.post_path(post), options)
+      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), options)
     end
   end
 end
