@@ -1,6 +1,9 @@
 %h2= @page_title
 
+%p.text-right= link_to 'New Post', effective_posts.new_admin_post_path, :class => 'btn btn-primary'
+
 = render_datatable @datatable do
   %p There are no posts
 
-%p= link_to 'New Post', effective_posts.new_admin_post_path, :class => 'btn btn-primary'
+- if @datatable.present?
+  %p.text-right= link_to 'New Post', effective_posts.new_admin_post_path, :class => 'btn btn-primary'
