@@ -12,8 +12,11 @@ module EffectivePostsHelper
     ].compact.join(' ').html_safe
   end
 
+  # Only supported options are:
+  # :length => 200 to set the max length of the content if the ReadMore divider is not present
+  # :label => 'Read Lots More' to set the label of the 'Read More' link
   def post_excerpt(post, options = {})
-    content = effective_region(post, :content) { '<p>Default content</p>'.html_safe }
+    content = effective_region(post, :content, :editable => false) { '<p>Default content</p>'.html_safe }
 
     divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
     length = options.delete(:length)
@@ -21,7 +24,7 @@ module EffectivePostsHelper
     if divider.present?
       content[0...divider] + readmore_link(post, options)
     elsif length.present? && content.length > length
-      truncate_html(content, length, '...', readmore_link(post, options))
+      truncate_html(content, length, readmore_link(post, options))
     else
       content
     end.html_safe
