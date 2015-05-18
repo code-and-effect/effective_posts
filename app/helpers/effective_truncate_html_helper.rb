@@ -28,9 +28,8 @@ module EffectiveTruncateHtmlHelper
           textNode = element.children.first
           textNode.content = truncate(textNode.content, length: (max - length), separator: ' ', omission: ellipsis)
           break # Break out of our while loop, as our ellipsis might invalidate our looping condition
-        else # Unexpected, so just remove the whole thing
-          Rails.logger.info "effective_posts, Unexpected number of last_element_child children"
-          element.remove
+        else # remove the last text node
+          element.children.last.remove
         end
       end
 
