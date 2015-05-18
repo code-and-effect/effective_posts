@@ -1,6 +1,3 @@
-# Modified from
-# http://blog.madebydna.com/all/code/2010/06/04/ruby-helper-to-cleanly-truncate-html.html
-
 module EffectiveTruncateHtmlHelper
   def chunk_html(text, max_length = 2, _ellipsis = '...', read_more = nil)
     doc = Nokogiri::HTML::DocumentFragment.parse text
@@ -13,65 +10,36 @@ module EffectiveTruncateHtmlHelper
     doc.inner_html.html_safe
   end
 
-  def truncate_html(text, max_length = 200, ellipsis = '...', read_more = nil)
-    ellipsis_length = ellipsis.to_s.length
-    doc = Nokogiri::HTML::DocumentFragment.parse text
-    content_length = doc.inner_text.length
-    actual_length = max_length - ellipsis_length
+  def truncate_html(text, max = 200, read_more = '', ellipsis = '...')
+    doc = Nokogiri::HTML::DocumentFragment.parse(text)
+    length = doc.inner_text.length
 
-    if content_length > actual_length
-      truncated_node = doc.truncate_html(actual_length)
+    while length > max
+      element = doc
+      element = element.last_element_child while element.last_element_child.present?
+      # element is now the last nested element (i.e. an HTML node, NOT a text node) in the HTML, or doc itself if doc has no elements (text node)
 
-      last_node = truncated_node
-      while last_node.respond_to?(:children) && last_node.children.present?
-        last_node = last_node.children.reverse.find { |node| node.try(:name) != 'a' } # Find the last non-A node
+      if (length - element.inner_text.length) > max  # If deleting this entire node means we're still over max, do it
+        element.remove
+      else # If we truncate this node, we'll be under max
+        if element.name == 'a'
+          element.remove  # I don't want to cut a link in half
+        elsif element.children.length == 1 # There must be a text node here.  Can there be more than 1 text node?
+          textNode = element.children.first
+          textNode.content = truncate(textNode.content, length: (max - length), separator: ' ', omission: ellipsis)
+          break # Break out of our while loop, as our ellipsis might invalidate our looping condition
+        else # Unexpected, so just remove the whole thing
+          Rails.logger.info "effective_posts, Unexpected number of last_element_child children"
+          element.remove
+        end
       end
 
-      if read_more.present?
-        read_more_node = Nokogiri::HTML::DocumentFragment.parse(read_more.to_s)
-        last_node.add_next_sibling(read_more_node)
-      end
+      length = doc.inner_text.length
+    end
 
-      if ellipsis.present?
-        ellipsis_node = Nokogiri::XML::Text.new(ellipsis.to_s, doc)
-        last_node.add_next_sibling(ellipsis_node)
-      end
+    # Clean up any empty tags
+    doc.last_element_child.remove while doc.last_element_child.try(:inner_html) == ''
 
-      truncated_node.inner_html
-    else
-      text.to_s
-    end.html_safe
+    (doc.inner_html + read_more.to_s).html_safe
   end
 end
-
-module NokogiriTruncator
-  module NodeWithChildren
-    def truncate_html(max_length)
-      return self if inner_text.length <= max_length
-      truncated_node = dup
-      truncated_node.children.remove
-
-      children.each do |node|
-        remaining_length = max_length - truncated_node.inner_text.length
-        break if remaining_length <= 10
-        truncated_node.add_child node.truncate_html(remaining_length)
-      end
-      truncated_node
-    end
-  end
-
-  module TextNode
-    include ActionView::Helpers::TextHelper
-
-    def truncate_html(max_length)
-      truncated = truncate(content, length: max_length, separator: ' ', omission: '')
-
-      # Nokogiri::XML::Text.new(truncate(content.to_s, :length => (max_length-1)), parent)
-      Nokogiri::XML::Text.new(truncated, parent)
-    end
-  end
-end
-
-Nokogiri::HTML::DocumentFragment.send(:include, NokogiriTruncator::NodeWithChildren)
-Nokogiri::XML::Element.send(:include, NokogiriTruncator::NodeWithChildren)
-Nokogiri::XML::Text.send(:include, NokogiriTruncator::TextNode)
