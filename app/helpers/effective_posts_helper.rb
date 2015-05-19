@@ -13,21 +13,36 @@ module EffectivePostsHelper
   end
 
   # Only supported options are:
-  # :length => 200 to set the max length of the content if the ReadMore divider is not present
-  # :label => 'Read Lots More' to set the label of the 'Read More' link
-  def post_excerpt(post, options = {})
+  # :label => 'Read more' to set the label of the 'Read More' link
+  # :omission => '...' passed to the final text node's truncate
+  # :length => 200 to set the max inner_text length of the content
+  # All other options are passed to the link_to 'Read more'
+  def post_excerpt(post, opts = {})
     content = effective_region(post, :content, :editable => false) { '<p>Default content</p>'.html_safe }
+
+    options = {
+      :label => 'Read more',
+      :omission => '...',
+      :length => 200
+    }.merge(opts)
 
     divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
     length = options.delete(:length)
+    omission = options.delete(:omission)
 
     if divider.present?
       content[0...divider] + readmore_link(post, options)
-    elsif length.present? && content.length > length
-      truncate_html(content, length, readmore_link(post, options))
+    elsif length.present?
+      truncate_html(content, length, omission) + readmore_link(post, options)
     else
       content
     end.html_safe
+  end
+
+  def readmore_link(post, options)
+    content_tag(:p, class: 'post-read-more') do
+      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), options)
+    end
   end
 
   def link_to_post_category(category, options = {})
@@ -42,9 +57,4 @@ module EffectivePostsHelper
     EffectivePosts.use_category_routes ? "/#{category}/#{post.to_param}" : effective_posts.post_path(post, category: category.to_s)
   end
 
-  def readmore_link(post, options)
-    content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), options)
-    end
-  end
 end

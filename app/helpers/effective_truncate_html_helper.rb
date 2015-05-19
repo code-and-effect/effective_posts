@@ -10,36 +10,41 @@ module EffectiveTruncateHtmlHelper
     doc.inner_html.html_safe
   end
 
-  def truncate_html(text, max = 200, read_more = '', ellipsis = '...')
-    doc = Nokogiri::HTML::DocumentFragment.parse(text)
-    length = doc.inner_text.length
+  # Truncates HTML or text to a certain inner_text character limit.
+  #
+  # If given HTML, the underlying markup may be much longer than length, but the displayed text
+  # will be no longer than (length + omission) characters.
+  def truncate_html(text, length = 200, omission = '...')
+    Nokogiri::HTML::DocumentFragment.parse(text).tap { |doc| _truncate_node(doc, length, omission) }.inner_html
+  end
 
-    while length > max
-      element = doc
-      element = element.last_element_child while element.last_element_child.present?
-      # element is now the last nested element (i.e. an HTML node, NOT a text node) in the HTML, or doc itself if doc has no elements (text node)
-
-      if (length - element.inner_text.length) > max  # If deleting this entire node means we're still over max, do it
-        element.remove
-      else # If we truncate this node, we'll be under max
-        if element.name == 'a'
-          element.remove  # I don't want to cut a link in half
-        elsif element.children.length == 1 # There must be a text node here.  Can there be more than 1 text node?
-          textNode = element.children.first
-          textNode.content = truncate(textNode.content, length: (max - length), separator: ' ', omission: ellipsis)
-          break # Break out of our while loop, as our ellipsis might invalidate our looping condition
-        else # Unexpected, so just remove the whole thing
-          Rails.logger.info "effective_posts, Unexpected number of last_element_child children"
-          element.remove
-        end
+  def _truncate_node(node, length, omission)
+    if node.inner_text.length <= length
+      # Do nothing, we're already reached base case
+    elsif node.name == 'a'
+      node.remove # I don't want to truncate anything in a link
+    elsif node.children.blank?
+      # I need to truncate myself, and I'm certainly a text node
+      if node.text?
+        node.content = truncate(node.content, length: length, separator: ' ', omission: omission)
+      else
+        Rails.logger.info '[WARNING] effective_posts: unexpected node in children.blank? recursive condition'
+        node.remove
+      end
+    else # Go through all the children, and delete anything after the length has been reached
+      child_length = 0
+      node.children.each do |child|
+        child_length > length ? (child.remove) : (child_length += child.inner_text.length)
       end
 
-      length = doc.inner_text.length
+      # We have now removed all nodes after length, but the last node is longer than our length
+      # child_length is the inner_text length of all included nodes
+      # And we only have to truncate the last child to get under length
+
+      child = node.children.last
+      child_max_length = length - (child_length - child.inner_text.length)
+
+      _truncate_node(child, child_max_length, omission)
     end
-
-    # Clean up any empty tags
-    doc.last_element_child.remove while doc.last_element_child.try(:inner_html) == ''
-
-    (doc.inner_html + read_more.to_s).html_safe
   end
 end
