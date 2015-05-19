@@ -1,0 +1,19 @@
+%h2= @page_title
+
+- @posts.find_each do |post|
+  .row
+    .col-sm-12
+      %h2.post-title
+        %a{:href => effective_post_path(post)}
+          = simple_effective_region post, :title do
+            = post.title
+  .row
+    .col-sm-6
+      %pre= effective_region(post, :content, :editable => false)
+
+    .col-sm-6
+      %pre= post_excerpt(post)
+
+  .row
+    .col-sm-12
+      %hr

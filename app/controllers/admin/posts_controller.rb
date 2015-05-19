@@ -83,6 +83,15 @@ module Admin
       redirect_to effective_posts.admin_posts_path
     end
 
+    def excerpts
+      @page_title = 'Post Excerpts'
+
+      EffectivePosts.authorized?(self, :index, Effective::Post)
+
+      @posts = Effective::Post.includes(:regions)
+    end
+
+
     private
 
     def post_params

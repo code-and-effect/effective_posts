@@ -1,6 +1,7 @@
 EffectivePosts::Engine.routes.draw do
   namespace :admin do
     resources :posts, :except => [:show]
+    match 'posts/excerpts', :to => 'posts#excerpts', :via => [:get]
   end
 
   scope :module => 'effective' do
