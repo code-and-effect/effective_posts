@@ -83,6 +83,11 @@ module Admin
       redirect_to effective_posts.admin_posts_path
     end
 
+    def excerpts
+      @page_title = 'Post Excerpts'
+      @posts = Effective::Post.includes(:regions)
+    end
+
     private
 
     def post_params
