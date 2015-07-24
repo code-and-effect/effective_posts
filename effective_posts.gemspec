@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "migrant"
   s.add_dependency "simple_form"
   s.add_dependency "effective_ckeditor", '>= 1.2.0'
-  s.add_dependency "effective_datatables", '>= 1.3.0'
+  s.add_dependency "effective_datatables", '>= 2.0.0'
   s.add_dependency "effective_regions", '>= 1.2.2'
 
   # s.add_development_dependency "sqlite3"
