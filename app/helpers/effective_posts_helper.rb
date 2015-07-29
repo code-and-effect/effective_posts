@@ -31,7 +31,7 @@ module EffectivePostsHelper
     omission = options.delete(:omission)
 
     if divider.present?
-      content[0...divider] + readmore_link(post, options)
+      truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + readmore_link(post, options)
     elsif length.present?
       truncate_html(content, length, omission) + readmore_link(post, options)
     else

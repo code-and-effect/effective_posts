@@ -1,24 +1,47 @@
 module EffectiveTruncateHtmlHelper
-  def chunk_html(text, max_length = 2, _ellipsis = '...', read_more = nil)
-    doc = Nokogiri::HTML::DocumentFragment.parse text
-
-    if doc.children.length >= max_length
-      doc.children.last.remove while doc.children.length > max_length
-      doc.children.last.add_next_sibling Nokogiri::HTML::DocumentFragment.parse("<p>#{ read_more }</p>")
-    end
-
-    doc.inner_html.html_safe
-  end
-
   # Truncates HTML or text to a certain inner_text character limit.
   #
   # If given HTML, the underlying markup may be much longer than length, but the displayed text
   # will be no longer than (length + omission) characters.
-  def truncate_html(text, length = 200, omission = '...')
-    Nokogiri::HTML::DocumentFragment.parse(text).tap { |doc| _truncate_node(doc, length, omission) }.inner_html
+  def truncate_html(text, length_or_content = 200, omission = '...')
+    doc = Nokogiri::HTML::DocumentFragment.parse(text)
+
+    if length_or_content.kind_of?(String)
+      content = (Nokogiri::HTML::DocumentFragment.parse(length_or_content).children.first.inner_text rescue length_or_content)
+      doc.tap { |doc| _truncate_node_to_content(doc, content, omission) }.inner_html
+    elsif length_or_content.kind_of?(Integer)
+      doc.tap { |doc| _truncate_node_to_length(doc, length_or_content, omission) }.inner_html
+    else
+      raise 'Unsupported datatype passed to second argument of truncate_html.  Expecting integer or string.'
+    end
   end
 
-  def _truncate_node(node, length, omission)
+  def _truncate_node_to_content(node, content, omission, seen = false)
+    if seen == true
+      node.remove
+    elsif node.children.blank?
+      index = node.content.index(content)
+
+      if index.present?
+        if node.parent.try(:content) == content # If my parent node just has my text in it, remove parent node too
+          node.parent.remove
+        elsif index == 0
+          node.remove
+        else
+          node.content = truncate(node.content, length: index+omission.to_s.length, separator: ' ', omission: omission)
+        end
+
+        seen = true
+      end
+    else
+      node.children.each { |child| seen = _truncate_node_to_content(child, content, omission, seen) }
+    end
+
+    seen
+  end
+
+
+  def _truncate_node_to_length(node, length, omission)
     if node.inner_text.length <= length
       # Do nothing, we're already reached base case
     elsif node.name == 'a'
@@ -26,13 +49,13 @@ module EffectiveTruncateHtmlHelper
     elsif node.children.blank?
       # I need to truncate myself, and I'm certainly a text node
       if node.text?
-        node.content = truncate(node.content, length: length, separator: ' ', omission: omission)
+        node.content = truncate(node.content, length: length+omission.to_s.length, separator: ' ', omission: omission)
       else
-        Rails.logger.info '[WARNING] effective_posts: unexpected node in children.blank? recursive condition'
         node.remove
       end
     else # Go through all the children, and delete anything after the length has been reached
       child_length = 0
+
       node.children.each do |child|
         child_length > length ? (child.remove) : (child_length += child.inner_text.length)
       end
@@ -44,7 +67,7 @@ module EffectiveTruncateHtmlHelper
       child = node.children.last
       child_max_length = length - (child_length - child.inner_text.length)
 
-      _truncate_node(child, child_max_length, omission)
+      _truncate_node_to_length(child, child_max_length, omission)
     end
   end
 end
