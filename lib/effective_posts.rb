@@ -1,7 +1,7 @@
+require 'haml-rails'
 require 'kaminari'
-require 'migrant'     # Required for rspec to run properly
 require 'nokogiri'
-require "effective_posts/engine"
+require 'effective_posts/engine'
 
 module EffectivePosts
   mattr_accessor :posts_table_name

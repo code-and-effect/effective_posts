@@ -7,20 +7,18 @@ module Effective
 
     belongs_to :user
 
-    structure do
-      title             :string, :validates => [:presence, :length => {:maximum => 255}]
-      category          :string, :validates => [:presence]
+    # structure do
+    #   title             :string, :validates => [:presence, :length => {:maximum => 255}]
+    #   category          :string, :validates => [:presence]
+    #   published_at      :datetime, :validates => [:presence]
+    #   draft             :boolean, :default => false
+    #   tags              :text
+    #   roles_mask        :integer, :default => 0
+    #   timestamps
+    # end
 
-      published_at      :datetime, :validates => [:presence]
-
-      draft             :boolean, :default => false
-
-      tags              :text
-
-      roles_mask        :integer, :default => 0
-
-      timestamps
-    end
+    validates_presence_of :title, :category, :published_at
+    validates_length_of :title, maximum: 255
 
     scope :drafts, -> { where(:draft => true) }
     scope :published, -> { where(:draft => false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
