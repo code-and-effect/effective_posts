@@ -1,7 +1,7 @@
 module Effective
   class Post < ActiveRecord::Base
     acts_as_role_restricted if defined?(EffectiveRoles)
-    acts_as_regionable if defined?(EffectiveRegions)
+    acts_as_regionable
 
     self.table_name = EffectivePosts.posts_table_name.to_s
 

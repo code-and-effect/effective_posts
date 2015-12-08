@@ -1,6 +1,8 @@
 require 'haml-rails'
 require 'kaminari'
 require 'nokogiri'
+require 'effective_datatables'
+require 'effective_regions'
 require 'effective_posts/engine'
 require 'effective_posts/version'
 
