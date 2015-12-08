@@ -2,6 +2,7 @@ require 'haml-rails'
 require 'kaminari'
 require 'nokogiri'
 require 'effective_posts/engine'
+require 'effective_posts/version'
 
 module EffectivePosts
   mattr_accessor :posts_table_name
