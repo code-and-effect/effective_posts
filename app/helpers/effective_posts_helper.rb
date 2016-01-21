@@ -1,3 +1,5 @@
+require 'cgi'
+
 module EffectivePostsHelper
   def render_post(post)
     render(partial: 'effective/posts/post', locals: { post: post })
@@ -30,13 +32,13 @@ module EffectivePostsHelper
     length = options.delete(:length)
     omission = options.delete(:omission)
 
-    if divider.present?
+    CGI.unescapeHTML(if divider.present?
       truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + readmore_link(post, options)
     elsif length.present?
       truncate_html(content, length, omission) + readmore_link(post, options)
     else
       content
-    end.html_safe
+    end).html_safe
   end
 
   def readmore_link(post, options)
