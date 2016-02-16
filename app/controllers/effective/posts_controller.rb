@@ -5,14 +5,7 @@ module Effective
     after_action :monkey_patch_for_kaminari, :only => [:index]
 
     def index
-      @posts = (Rails::VERSION::MAJOR > 3 ? Effective::Post.all : Effective::Post.scoped)
-
-      @posts = @posts.for_role(current_user.try(:roles)) if defined?(EffectiveRoles)
-      @posts = @posts.with_category(params[:category]) if params[:category]
-      @posts = @posts.published
-      @posts = @posts.includes(:regions)
-
-      @posts = @posts.order("#{EffectivePosts.posts_table_name}.published_at DESC")
+      @posts = Effective::Post.posts(current_user, params[:category])
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
 
       EffectivePosts.authorized?(self, :index, Effective::Post)

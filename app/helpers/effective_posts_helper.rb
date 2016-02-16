@@ -59,4 +59,17 @@ module EffectivePostsHelper
     EffectivePosts.use_category_routes ? "/#{category}/#{post.to_param}" : effective_posts.post_path(post, category: category.to_s)
   end
 
+  def render_post_categories
+    categories = EffectivePosts.categories
+    return nil unless categories.present?
+
+    render partial: '/effective/posts/categories', locals: { categories: categories }
+  end
+
+  def render_recent_posts(user: nil, category: nil, limit: 4)
+    posts = Effective::Post.posts(current_user, category).limit(limit)
+
+    render partial: '/effective/posts/recent_posts', locals: { posts: posts }
+  end
+
 end

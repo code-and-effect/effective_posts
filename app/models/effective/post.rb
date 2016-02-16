@@ -24,6 +24,23 @@ module Effective
     scope :published, -> { where(:draft => false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
     scope :with_category, proc { |category| where(:category => category.to_s.downcase) }
 
+    scope :posts, -> (user, category) {
+      scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
+
+      scope = scope.for_role(user.roles) if user.present? && defined?(EffectiveRoles) && user.respond_to?(:roles)
+      scope = scope.with_category(category) if category.present?
+
+      scope = scope.published
+      scope = scope.includes(:regions)
+
+      scope = scope.order("#{EffectivePosts.posts_table_name}.published_at DESC")
+      scope
+    }
+
+    def to_s
+      title.presence || 'New Post'
+    end
+
     def to_param
       "#{id}-#{title.parameterize}"
     end
