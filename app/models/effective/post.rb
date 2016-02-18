@@ -17,23 +17,30 @@ module Effective
     #   timestamps
     # end
 
-    validates_presence_of :title, :category, :published_at
-    validates_length_of :title, maximum: 255
+    validates :title, presence: true, length: { maximum: 255 }
+    validates :category, presence: true
+    validates :published_at, presence: true
 
-    scope :drafts, -> { where(:draft => true) }
-    scope :published, -> { where(:draft => false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
-    scope :with_category, proc { |category| where(:category => category.to_s.downcase) }
+    scope :drafts, -> { where(draft: true) }
+    scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
+    scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
-    scope :posts, -> (user, category) {
+    scope :posts, -> (user: nil, category: nil, drafts: false) {
       scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
+      scope = scope.includes(:regions).order(published_at: :desc)
 
-      scope = scope.for_role(user.roles) if user.present? && defined?(EffectiveRoles) && user.respond_to?(:roles)
-      scope = scope.with_category(category) if category.present?
+      if user.present? && user.respond_to?(:roles) && defined?(EffectiveRoles)
+        scope = scope.for_role(user.roles)
+      end
 
-      scope = scope.published
-      scope = scope.includes(:regions)
+      if category.present?
+        scope = scope.with_category(category)
+      end
 
-      scope = scope.order("#{EffectivePosts.posts_table_name}.published_at DESC")
+      if drafts.blank?
+        scope = scope.published
+      end
+
       scope
     }
 
