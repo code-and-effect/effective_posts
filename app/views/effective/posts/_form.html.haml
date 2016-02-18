@@ -6,15 +6,13 @@
   - else
     = f.input :category, as: :hidden, input_html: { value: 'posts' }
 
-  = f.input :draft, hint: 'Save this post as a draft.  It will not be accessible on the website.'
-
   - if defined?(EffectiveFormInputs)
     = f.input :published_at, as: :effective_date_time_picker, hint: 'Set this to a future date to schedule a post to appear in the future.'
   - else
     = f.input :published_at, hint: 'Set this to a future date to schedule a post to appear in the future.'
 
   - if defined?(EffectiveFormInputs)
-    = f.input :content, as: :text, hint: 'The content of your post.', required: true
+    = f.input :content, as: :effective_ckeditor_text_area, hint: 'The content of your post.', required: true
   - else
     = f.input :content, as: :text, hint: 'The content of your post.', required: true
 

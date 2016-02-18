@@ -75,4 +75,9 @@ module EffectivePostsHelper
     render partial: '/effective/posts/recent_posts', locals: { posts: posts }
   end
 
+  ### Submitting a Post
+  def link_to_submit_post(label = 'Submit a post', options = {})
+    link_to(label, effective_posts.new_post_path, options)
+  end
+
 end
