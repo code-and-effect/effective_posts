@@ -1,18 +1,18 @@
 EffectivePosts::Engine.routes.draw do
   namespace :admin do
-    resources :posts, :except => [:show]
-    match 'posts/excerpts', :to => 'posts#excerpts', :via => [:get]
+    resources :posts, except: [:show]
+    match 'posts/excerpts', to: 'posts#excerpts', via: :get
   end
 
   scope :module => 'effective' do
-    resources :posts, :only => [:index, :show]
+    resources :posts, only: ([:index, :show] unless EffectivePosts.submissions_enabled)
 
     if EffectivePosts.use_category_routes
-      EffectivePosts.categories.each do |category|
-        next if category.to_s == 'posts'
+      Array(EffectivePosts.categories).map { |category| category.to_s }.each do |category|
+        next if category == 'posts'
 
-        match "#{category}", :to => 'posts#index', :via => [:get], :defaults => {:category => category.to_s }
-        match "#{category}/:id", :to => 'posts#show', :via => [:get], :defaults => {:category => category.to_s }
+        match category, to: 'posts#index', via: :get, defaults: {:category => category }
+        match "#{category}/:id", to: 'posts#show', via: :get, defaults: {:category => category }
       end
     end
   end

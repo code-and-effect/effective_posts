@@ -1,4 +1,4 @@
-= simple_form_for(post, (EffectivePosts.admin_simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.admin_post_path(post.id) : effective_posts.admin_posts_path))) do |f|
+= simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
   = f.input :title, hint: 'Give this post a title'
 
   - if Array(EffectivePosts.categories).length > 0
@@ -13,12 +13,11 @@
   - else
     = f.input :published_at, hint: 'Set this to a future date to schedule a post to appear in the future.'
 
-  - if defined?(EffectiveRoles) and f.object.respond_to?(:roles)
-    = f.input :roles, collection: EffectiveRoles.roles_collection(f.object), as: :check_boxes, hint: '* leave blank for a regular public post that anyone can view'
+  - if defined?(EffectiveFormInputs)
+    = f.input :content, as: :text, hint: 'The content of your post.', required: true
+  - else
+    = f.input :content, as: :text, hint: 'The content of your post.', required: true
 
   .effective-post-actions.pull-right
     = f.button :submit, 'Save', data: { disable_with: 'Saving...' }
-    - if defined?(EffectiveRegions)
-      = f.button :submit, 'Save and Edit Content', data: { disable_with: 'Saving...' }
-    = f.button :submit, 'Save and Add New', data: { disable_with: 'Saving...' }
-    = link_to 'Cancel', effective_posts.admin_posts_path
+    = link_to 'Cancel', effective_posts.posts_path

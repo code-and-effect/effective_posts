@@ -11,14 +11,20 @@ module EffectivePosts
 
   mattr_accessor :authorization_method
   mattr_accessor :permitted_params
-  mattr_accessor :simple_form_options
+
   mattr_accessor :layout
+  mattr_accessor :simple_form_options
+  mattr_accessor :admin_simple_form_options
 
   mattr_accessor :categories
   mattr_accessor :use_category_routes
 
   mattr_accessor :per_page
   mattr_accessor :post_meta_author
+
+  mattr_accessor :submissions_enabled
+  mattr_accessor :submissions_require_approval
+  mattr_accessor :submissions_note
 
   def self.setup
     yield self
@@ -32,7 +38,7 @@ module EffectivePosts
   end
 
   def self.permitted_params
-    @@permitted_params ||= [:title, :draft, :category, :published_at, :roles => []]
+    @@permitted_params ||= [:title, :draft, :category, :published_at, :content, :roles => []]
   end
 
 end

@@ -36,17 +36,28 @@ EffectivePosts.setup do |config|
   }
 
   # SimpleForm Options
-  # This Hash of options will be passed into any simple_form_for() calls
+  # This Hash of options will be passed into any client facing simple_form_for() calls
   config.simple_form_options = {}
+  config.admin_simple_form_options = {}  # For the /admin/posts/new form
 
   # config.simple_form_options = {
-  #   :html => {:class => 'form-horizontal'},
-  #   :wrapper => :horizontal_form,
-  #   :wrapper_mappings => {
-  #     :boolean => :horizontal_boolean,
-  #     :check_boxes => :horizontal_radio_and_checkboxes,
-  #     :radio_buttons => :horizontal_radio_and_checkboxes
+  #   html: {class: 'form-horizontal'},
+  #   wrapper: :horizontal_form,
+  #   wrapper_mappings: {
+  #     boolean: :horizontal_boolean,
+  #     check_boxes: :horizontal_radio_and_checkboxes,
+  #     radio_buttons: :horizontal_radio_and_checkboxes
   #   }
   # }
+
+  # Submissions
+  # Allow users to submit posts (optionally for approval) to display on the website
+  config.submissions_enabled = true
+
+  # When true, an Admin must first approve any newly submitted posts before they'll be displayed
+  config.submissions_require_approval = true
+
+  # The Thank you message when they submit a post
+  config.submissions_note = "News & Event submitted! A confirmation email has been sent to the AALA office. When approved, your submission will appear on the website."
 
 end

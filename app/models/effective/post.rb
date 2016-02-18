@@ -48,6 +48,14 @@ module Effective
       title.presence || 'New Post'
     end
 
+    def content
+      region(:content).content
+    end
+
+    def content=(input)
+      region(:content).content = input
+    end
+
     def to_param
       "#{id}-#{title.parameterize}"
     end

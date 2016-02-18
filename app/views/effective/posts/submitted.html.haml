@@ -1,0 +1,9 @@
+%h2= @page_title
+
+%p= EffectivePosts.submissions_note
+
+%p= link_to 'Edit Post', effective_posts.edit_post_path(@post), class: 'btn btn-primary btn-edit-post'
+
+%hr
+
+= render file: '/effective/posts/show'
