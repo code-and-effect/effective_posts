@@ -10,6 +10,7 @@ module EffectivePosts
   mattr_accessor :posts_table_name
 
   mattr_accessor :authorization_method
+  mattr_accessor :permitted_params
   mattr_accessor :simple_form_options
   mattr_accessor :layout
 
@@ -29,4 +30,9 @@ module EffectivePosts
     end
     true
   end
+
+  def self.permitted_params
+    @@permitted_params ||= [:title, :draft, :category, :published_at, :roles => []]
+  end
+
 end

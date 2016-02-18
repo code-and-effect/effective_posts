@@ -95,9 +95,7 @@ module Admin
     private
 
     def post_params
-      params.require(:effective_post).permit(
-        :title, :draft, :category, :published_at, :roles => []
-      )
+      params.require(:effective_post).permit(EffectivePosts.permitted_params)
     end
 
   end
