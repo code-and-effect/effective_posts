@@ -25,6 +25,16 @@ module EffectivePosts
         migration_template '../../../db/migrate/01_create_effective_posts.rb.erb', 'db/migrate/create_effective_posts.rb'
       end
 
+      def copy_mailer_preview
+        mailer_preview_path = (Rails.application.config.action_mailer.preview_path rescue nil)
+
+        if mailer_preview_path.present?
+          template 'effective_posts_mailer_preview.rb', File.join(mailer_preview_path, 'effective_posts_mailer_preview.rb')
+        else
+          puts "couldn't find action_mailer.preview_path.  Skipping effective_posts_mailer_preview."
+        end
+      end
+
       def show_readme
         readme "README" if behavior == :invoke
       end

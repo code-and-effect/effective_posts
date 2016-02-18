@@ -44,6 +44,11 @@ module Effective
       if @post.save
         @page_title ||= 'Post Submitted'
         flash.now[:success] = 'Successfully submitted post'
+
+        if EffectivePosts.submissions_require_approval
+          @post.send_post_submitted_to_admin!
+        end
+
         render :submitted
       else
         @page_title ||= 'New Post'
@@ -61,6 +66,7 @@ module Effective
 
     def update
       @post ||= Effective::Post.find(params[:id])
+      draft_was = @post.draft
       @post.draft = (EffectivePosts.submissions_require_approval == true)
 
       EffectivePosts.authorized?(self, :update, @post)
@@ -68,6 +74,11 @@ module Effective
       if @post.update_attributes(post_params)
         @page_title ||= 'Post Submitted'
         flash.now[:success] = 'Successfully re-submitted post'
+
+        if EffectivePosts.submissions_require_approval && draft_was != true
+          @post.send_post_submitted_to_admin!
+        end
+
         render :submitted
       else
         @page_title ||= 'Edit Post'

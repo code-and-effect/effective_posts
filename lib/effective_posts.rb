@@ -26,6 +26,9 @@ module EffectivePosts
   mattr_accessor :submissions_require_approval
   mattr_accessor :submissions_note
 
+  # These are hashes of configs
+  mattr_accessor :mailer
+
   def self.setup
     yield self
   end

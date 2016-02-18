@@ -31,8 +31,8 @@ EffectivePosts.setup do |config|
   # Layout Settings
   # Configure the Layout per controller, or all at once
   config.layout = {
-    :pages => 'application',
-    :admin => 'application'
+    posts: 'application',
+    admin: 'application'
   }
 
   # SimpleForm Options
@@ -59,5 +59,31 @@ EffectivePosts.setup do |config|
 
   # The Thank you message when they submit a post
   config.submissions_note = "News & Event submitted! A confirmation email has been sent to the AALA office. When approved, your submission will appear on the website."
+
+  # Mailer Settings
+  # effective_posts will send the admin an email when a post is submitted
+  # For all the emails, the same :subject_prefix will be prefixed.  Leave as nil / empty string if you don't want any prefix
+  #
+  # The subject_for_post_submitted_to_admin can be one of:
+  # - nil / empty string to use the built in defaults
+  # - A string with the full subject line for this email
+  # - A Proc to create the subject line based on the email
+  # In all three of these cases, the subject_prefix will still be used.
+
+  # The Procs are the same for admin & buyer receipt, the seller Proc is different
+  # subject_for_post_submitted_to_admin: Proc.new { |post| "Post needs approval"}
+
+  config.mailer = {
+    subject_prefix: '[example]',
+    subject_for_post_submitted_to_admin: '',
+
+    layout: 'effective_posts_mailer_layout',
+
+    default_from: 'info@example.com',
+    admin_email: 'admin@example.com',
+
+    deliver_method: nil,   # :deliver (rails < 4.2), :deliver_now (rails >= 4.2) or :deliver_later
+    delayed_job_deliver: false
+  }
 
 end

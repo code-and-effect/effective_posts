@@ -1,0 +1,22 @@
+%p A new post has been submitted and needs your approval before it may be displayed on the website:
+
+%p= link_to 'Approve Post', effective_posts.admin_approve_post_path(post)
+
+%hr
+
+%h3 Title
+%p= @post.title
+
+%h3 Category
+%p= @post.category
+
+- if @post.user.present?
+  %h3 Submitted by
+  %p= @post.user
+
+%h3 Content
+%p= @post.content
+
+%hr
+
+%p= link_to 'Approve Post', effective_posts.admin_approve_post_path(post)
