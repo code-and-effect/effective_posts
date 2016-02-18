@@ -1,6 +1,11 @@
 EffectivePosts::Engine.routes.draw do
   namespace :admin do
     resources :posts, except: [:show]
+
+    if EffectivePosts.submissions_enabled && EffectivePosts.submissions_require_approval
+      match 'posts/:id/approve', to: 'posts#approve', via: :get, as: :approve_post
+    end
+
     match 'posts/excerpts', to: 'posts#excerpts', via: :get
   end
 

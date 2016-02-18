@@ -12,7 +12,7 @@ module Admin
     end
 
     def new
-      @post = Effective::Post.new(:published_at => Time.zone.now)
+      @post = Effective::Post.new(published_at: Time.zone.now)
       @page_title = 'New Post'
 
       EffectivePosts.authorized?(self, :new, @post)
@@ -83,6 +83,20 @@ module Admin
       end
 
       redirect_to effective_posts.admin_posts_path
+    end
+
+    def approve
+      @post = Effective::Post.find(params[:id])
+
+      EffectivePosts.authorized?(self, :approve, @post)
+
+      if @post.update_attributes(draft: false)
+        flash[:success] = 'Successfully approved post.  It is now displayed on the website.'
+      else
+        flash[:danger] = "Unable to approve post: #{@post.errors.full_messages.join(', ')}"
+      end
+
+      redirect_to(:back) rescue redirect_to(effective_posts.admin_posts_path)
     end
 
     def excerpts

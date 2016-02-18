@@ -48,6 +48,10 @@ module Effective
       title.presence || 'New Post'
     end
 
+    def approved?
+      draft == false
+    end
+
     def content
       region(:content).content
     end
@@ -64,5 +68,27 @@ module Effective
     def time_to_read_in_seconds(reading_speed = 3.333)
       (regions.to_a.sum { |region| (region.content || '').scan(/\w+/).size } / reading_speed).seconds
     end
+
+    def send_post_submitted_to_admin!
+      send_email(:post_submitted_to_admin, to_param)
+    end
+
+    private
+
+    def send_email(email, *mailer_args)
+      begin
+        if EffectivePosts.mailer[:delayed_job_deliver] && EffectivePosts.mailer[:deliver_method] == :deliver_later
+          Effective::PostsMailer.delay.public_send(email, *mailer_args)
+        elsif EffectivePosts.mailer[:deliver_method].present?
+          Effective::PostsMailer.public_send(email, *mailer_args).public_send(EffectivePosts.mailer[:deliver_method])
+        else
+          Effective::PostsMailer.public_send(email, *mailer_args).deliver_now
+        end
+      rescue => e
+        raise e unless Rails.env.production?
+        return false
+      end
+    end
+
   end
 end
