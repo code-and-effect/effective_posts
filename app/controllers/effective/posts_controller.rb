@@ -2,6 +2,9 @@ module Effective
   class PostsController < ApplicationController
     layout (EffectivePosts.layout.kind_of?(Hash) ? EffectivePosts.layout[:posts] : EffectivePosts.layout)
 
+    before_action :authenticate_user!, only: [:new, :create, :edit, :update],
+      if: -> { EffectivePosts.submissions_require_current_user }
+
     after_action :monkey_patch_for_kaminari, only: [:index]
 
     def index

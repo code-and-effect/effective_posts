@@ -23,6 +23,7 @@ module EffectivePosts
   mattr_accessor :post_meta_author
 
   mattr_accessor :submissions_enabled
+  mattr_accessor :submissions_require_current_user
   mattr_accessor :submissions_require_approval
   mattr_accessor :submissions_note
 

@@ -54,6 +54,9 @@ EffectivePosts.setup do |config|
   # Allow users to submit posts (optionally for approval) to display on the website
   config.submissions_enabled = true
 
+  # When true, a user might be signed in to submit a post. (calls devise's authenticate_user!)
+  config.submissions_require_current_user = false
+
   # When true, an Admin must first approve any newly submitted posts before they'll be displayed
   config.submissions_require_approval = true
 

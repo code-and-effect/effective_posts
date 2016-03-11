@@ -1,3 +1,6 @@
+- if EffectivePosts.submissions_enabled
+  %p.text-right= link_to 'Submit New Post', effective_posts.new_post_path, class: 'btn btn-primary'
+
 %nav= paginate @posts
 
 .effective-posts
