@@ -6,7 +6,7 @@
 
   %p.post-meta= post_meta(@post)
 
-  .post-content
-    = effective_region @post, :content do
+  .post-body.post-content
+    = effective_region @post, :body do
       %p Default content
 

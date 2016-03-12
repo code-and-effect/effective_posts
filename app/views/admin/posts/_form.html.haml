@@ -1,19 +1,30 @@
 = simple_form_for(post, (EffectivePosts.admin_simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.admin_post_path(post.id) : effective_posts.admin_posts_path))) do |f|
-  = f.input :title, hint: 'Give this post a title'
+  = f.input :title, hint: 'The title of your post.'
 
   - if Array(EffectivePosts.categories).length > 0
-    = f.input :category, collection: EffectivePosts.categories, as: :select, include_blank: false
+    = f.input :category,
+      as: (defined?(EffectiveFormInputs) ? :effective_select : :select),
+      collection: EffectivePosts.categories,
+      include_blank: false
   - else
     = f.input :category, as: :hidden, input_html: { value: 'posts' }
 
+  = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
+
   = f.input :draft, hint: 'Save this post as a draft.  It will not be accessible on the website.'
 
-  - if defined?(EffectiveFormInputs)
-    = f.input :published_at, as: :effective_date_time_picker, hint: 'Set this to a future date to schedule a post to appear in the future.'
-  - else
-    = f.input :published_at, hint: 'Set this to a future date to schedule a post to appear in the future.'
+  = f.input :published_at,
+    as: (defined?(EffectiveFormInputs) ? :effective_date_time_picker : :datetime),
+    label: 'Publish date',
+    hint: 'When your post will be displayed on the website.'
 
-  - if defined?(EffectiveRoles) and f.object.respond_to?(:roles)
+  = f.input :body,
+    as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
+    hint: 'The body of your post.',
+    toolbar: 'simple',
+    required: true
+
+  - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
     = f.input :roles, collection: EffectiveRoles.roles_collection(f.object), as: :check_boxes, hint: '* leave blank for a regular public post that anyone can view'
 
   .effective-post-actions.pull-right

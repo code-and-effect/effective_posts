@@ -1,16 +1,16 @@
-%span.actions
-  = link_to 'Visit', effective_post_path(post), :target => '_blank'
-  = '-'
+- if EffectivePosts.submissions_enabled && EffectivePosts.submissions_require_approval && !post.approved?
+  = link_to effective_posts.admin_approve_post_path(post.id), title: 'Approve' do
+    %span.glyphicon.glyphicon-ok
 
-  - if defined?(EffectiveRegions)
-    = link_to 'Edit Content', '/edit' + effective_posts.post_path(post), 'data-no-turbolink' => true
-    = '-'
+= link_to effective_posts.edit_admin_post_path(post.id), title: 'Settings' do
+  %span.glyphicon.glyphicon-cog
 
-  = link_to 'Edit', effective_posts.edit_admin_post_path(post.id)
-  = '-'
+= link_to effective_post_path(post), title: 'View', target: '_blank' do
+  %span.glyphicon.glyphicon-eye-open
 
-  - if EffectivePosts.submissions_enabled && EffectivePosts.submissions_require_approval
-    = link_to_unless(post.approved?, 'Approve', effective_posts.admin_approve_post_path(post))
-    = '-'
+- if defined?(EffectiveRegions)
+  = link_to ('/edit' + effective_post_path(post)), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank' do
+    %span.glyphicon.glyphicon-edit
 
-  = link_to 'Delete', effective_posts.admin_post_path(post.id), :data => {:method => :delete, :confirm => "Are you sure?  This post will be made unavailable."}
+= link_to effective_posts.admin_post_path(post.id), title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete? This cannot be undone.' } do
+  %span.glyphicon.glyphicon-trash

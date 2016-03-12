@@ -9,7 +9,7 @@
             = post.title
   .row
     .col-sm-6
-      %pre= effective_region(post, :content, :editable => false)
+      %pre= effective_region(post, :body, :editable => false)
 
     .col-sm-6
       %pre= post_excerpt(post)

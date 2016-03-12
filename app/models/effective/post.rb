@@ -52,12 +52,12 @@ module Effective
       draft == false
     end
 
-    def content
-      region(:content).content
+    def body
+      region(:body).content
     end
 
-    def content=(input)
-      region(:content).content = input
+    def body=(input)
+      region(:body).content = input
     end
 
     def to_param

@@ -11,7 +11,15 @@ if defined?(EffectiveDatatables)
           table_column :title
           table_column :category, filter: { type: :select, values: EffectivePosts.categories }
 
-          table_column :draft
+          if EffectivePosts.submissions_enabled
+            table_column :approved, column: 'NOT(draft)', as: :boolean do |post|
+              post.draft ? 'No' : 'Yes'
+            end
+
+            table_column :draft, visible: false
+          else
+            table_column :draft
+          end
 
           table_column :created_at, label: 'Submitted at', visible: false
 

@@ -25,7 +25,7 @@ module EffectivePostsHelper
   # :length => 200 to set the max inner_text length of the content
   # All other options are passed to the link_to 'Read more'
   def post_excerpt(post, read_more_link: true, label: 'Read more', omission: '...', length: 200)
-    content = effective_region(post, :content, :editable => false) { '<p>Default content</p>'.html_safe }
+    content = effective_region(post, :body, :editable => false) { '<p>Default content</p>'.html_safe }
 
     divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
     read_more = (read_more_link && label.present?) ? readmore_link(post, label: label) : ''
