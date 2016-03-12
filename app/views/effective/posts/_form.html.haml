@@ -1,21 +1,27 @@
 = simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
-  = f.input :title, hint: 'Give this post a title'
+  = f.input :title, hint: 'The title of your post.'
 
   - if Array(EffectivePosts.categories).length > 0
-    = f.input :category, collection: EffectivePosts.categories, as: :select, include_blank: false
+    = f.input :category,
+      as: (defined?(EffectiveFormInputs) ? :effective_select : :select),
+      collection: EffectivePosts.categories,
+      include_blank: false
   - else
     = f.input :category, as: :hidden, input_html: { value: 'posts' }
 
-  - if defined?(EffectiveFormInputs)
-    = f.input :published_at, as: :effective_date_time_picker, hint: 'Set this to a future date to schedule a post to appear in the future.'
-  - else
-    = f.input :published_at, hint: 'Set this to a future date to schedule a post to appear in the future.'
+  = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
-  - if defined?(EffectiveFormInputs)
-    = f.input :content, as: :effective_ckeditor_text_area, hint: 'The content of your post.', required: true
-  - else
-    = f.input :content, as: :text, hint: 'The content of your post.', required: true
+  = f.input :published_at,
+    as: (defined?(EffectiveFormInputs) ? :effective_date_time_picker : :datetime),
+    label: 'Publish date',
+    hint: 'When your post will be displayed on the website.'
 
-  .effective-post-actions.pull-right
+  = f.input :body,
+    as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
+    hint: 'The body of your post.',
+    toolbar: 'simple',
+    required: true
+
+  %p.effective-post-actions.pull-right
     = f.button :submit, 'Save', data: { disable_with: 'Saving...' }
     = link_to 'Cancel', effective_posts.posts_path

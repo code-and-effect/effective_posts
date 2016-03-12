@@ -50,6 +50,9 @@ EffectivePosts.setup do |config|
   #   }
   # }
 
+  # Display the effective roles 'choose roles' input when an admin creates a new post
+  config.use_effective_roles = true
+
   # Submissions
   # Allow users to submit posts (optionally for approval) to display on the website
   config.submissions_enabled = true

@@ -19,6 +19,8 @@ module EffectivePosts
   mattr_accessor :categories
   mattr_accessor :use_category_routes
 
+  mattr_accessor :use_effective_roles
+
   mattr_accessor :per_page
   mattr_accessor :post_meta_author
 
@@ -42,7 +44,7 @@ module EffectivePosts
   end
 
   def self.permitted_params
-    @@permitted_params ||= [:title, :draft, :category, :published_at, :content, :roles => []]
+    @@permitted_params ||= [:title, :draft, :category, :published_at, :body, roles: []]
   end
 
 end
