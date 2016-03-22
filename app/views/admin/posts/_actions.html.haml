@@ -5,11 +5,11 @@
 = link_to effective_posts.edit_admin_post_path(post.id), title: 'Settings' do
   %span.glyphicon.glyphicon-cog
 
-= link_to effective_post_path(post), title: 'View', target: '_blank' do
+= link_to effective_post_path(post, preview: true), title: 'View', target: '_blank' do
   %span.glyphicon.glyphicon-eye-open
 
 - if defined?(EffectiveRegions)
-  = link_to ('/edit' + effective_post_path(post)), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank' do
+  = link_to effective_post_path(post, edit: true), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank' do
     %span.glyphicon.glyphicon-edit
 
 = link_to effective_posts.admin_post_path(post.id), title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete? This cannot be undone.' } do
