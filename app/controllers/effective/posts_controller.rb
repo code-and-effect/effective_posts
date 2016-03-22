@@ -17,7 +17,7 @@ module Effective
     end
 
     def show
-      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: params[:edit].to_s == 'true')
+      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: (params[:edit].to_s == 'true' || params[:preview].to_s == 'true'))
       @post = @posts.find(params[:id])
 
       if @post.respond_to?(:roles_permit?)
