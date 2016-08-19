@@ -5,7 +5,7 @@
 = link_to effective_posts.edit_admin_post_path(post.id), title: 'Settings' do
   %span.glyphicon.glyphicon-cog
 
-= link_to effective_post_path(post, preview: true), title: 'View', target: '_blank' do
+= link_to effective_post_path(post, (post.draft? ? {preview: true} : nil)), title: 'View', target: '_blank' do
   %span.glyphicon.glyphicon-eye-open
 
 - if defined?(EffectiveRegions)

@@ -1,8 +1,9 @@
 require 'cgi'
 
 module EffectivePostsHelper
-  def effective_post_path(post, opts = {})
+  def effective_post_path(post, opts = nil)
     category = post.category.to_s.downcase
+    opts ||= {}
 
     if EffectivePosts.use_category_routes
       "/#{category}" + effective_posts.post_path(post, opts)
