@@ -6,16 +6,16 @@ module Admin
 
     def index
       @page_title = 'Posts'
-      EffectivePosts.authorized?(self, :index, Effective::Post)
+      @datatable = Effective::Datatables::Posts.new()
 
-      @datatable = Effective::Datatables::Posts.new() if defined?(EffectiveDatatables)
+      authorize_effective_posts!
     end
 
     def new
       @post = Effective::Post.new(published_at: Time.zone.now)
       @page_title = 'New Post'
 
-      EffectivePosts.authorized?(self, :new, @post)
+      authorize_effective_posts!
     end
 
     def create
@@ -24,7 +24,7 @@ module Admin
 
       @page_title = 'New Post'
 
-      EffectivePosts.authorized?(self, :create, @post)
+      authorize_effective_posts!
 
       if @post.save
         if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
@@ -46,14 +46,14 @@ module Admin
       @post = Effective::Post.find(params[:id])
       @page_title = 'Edit Post'
 
-      EffectivePosts.authorized?(self, :edit, @post)
+      authorize_effective_posts!
     end
 
     def update
       @post = Effective::Post.find(params[:id])
       @page_title = 'Edit Post'
 
-      EffectivePosts.authorized?(self, :update, @post)
+      authorize_effective_posts!
 
       if @post.update_attributes(post_params)
         if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
@@ -74,7 +74,7 @@ module Admin
     def destroy
       @post = Effective::Post.find(params[:id])
 
-      EffectivePosts.authorized?(self, :destroy, @post)
+      authorize_effective_posts!
 
       if @post.destroy
         flash[:success] = 'Successfully deleted post'
@@ -87,8 +87,9 @@ module Admin
 
     def approve
       @post = Effective::Post.find(params[:id])
+      @page_title = 'Approve Post'
 
-      EffectivePosts.authorized?(self, :approve, @post)
+      authorize_effective_posts!
 
       if @post.update_attributes(draft: false)
         flash[:success] = 'Successfully approved post.  It is now displayed on the website.'
@@ -100,14 +101,18 @@ module Admin
     end
 
     def excerpts
+      @posts = Effective::Post.includes(:regions)
       @page_title = 'Post Excerpts'
 
-      EffectivePosts.authorized?(self, :index, Effective::Post)
-
-      @posts = Effective::Post.includes(:regions)
+      authorize_effective_posts!
     end
 
     private
+
+    def authorize_effective_posts!
+      EffectivePosts.authorized?(self, :admin, :effective_posts)
+      EffectivePosts.authorized?(self, action_name.to_sym, @post || Effective::Post)
+    end
 
     def post_params
       params.require(:effective_post).permit(EffectivePosts.permitted_params)

@@ -140,7 +140,11 @@ The permissions you actually want to define are as follows (using CanCan):
 
 ```ruby
 can [:index, :show], Effective::Post
-can [:manage], Effective::Post if user.is?(:admin)
+
+if user.admin?
+  can :manage, Effective::Post
+  can :admin, :effective_pages
+end
 ```
 
 ## Future Plans
@@ -155,9 +159,6 @@ There are some obvious additional features that have yet to be implemented:
 ## License
 
 MIT License.  Copyright [Code and Effect Inc.](http://www.codeandeffect.com/)
-
-Code and Effect is the product arm of [AgileStyle](http://www.agilestyle.com/), an Edmonton-based shop that specializes in building custom web applications with Ruby on Rails.
-
 
 ## Testing
 

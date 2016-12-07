@@ -13,7 +13,7 @@ module Effective
 
       EffectivePosts.authorized?(self, :index, Effective::Post)
 
-      @page_title = (params[:page_title] || params[:category] || 'Posts').titleize
+      @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize
     end
 
     def show
