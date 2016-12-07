@@ -1,5 +1,3 @@
-# EffectivePosts Rails Engine
-
 EffectivePosts.setup do |config|
   config.posts_table_name = :posts
 
