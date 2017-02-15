@@ -37,7 +37,7 @@ module EffectivePostsHelper
     read_more = (read_more_link && label.present?) ? readmore_link(post, label: label) : ''
 
     CGI.unescapeHTML(if divider.present?
-      truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + readmore
+      truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + read_more
     elsif length.present?
       truncate_html(content, length, omission) + read_more
     else
@@ -47,7 +47,7 @@ module EffectivePostsHelper
 
   def read_more_link(post, options)
     content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), options)
+      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
     end
   end
   alias_method :readmore_link, :read_more_link
@@ -58,8 +58,8 @@ module EffectivePostsHelper
     categories = EffectivePosts.categories
   end
 
-  def render_post_categories
-    render(partial: '/effective/posts/categories', locals: { categories: post_categories })
+  def render_post_categories(reverse: false)
+    render(partial: '/effective/posts/categories', locals: { categories: (reverse ? post_categories.reverse : post_categories) })
   end
 
   def link_to_post_category(category, options = {})
@@ -72,7 +72,8 @@ module EffectivePostsHelper
   ### Recent Posts
 
   def recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)
-    @recent_posts ||= Effective::Post.posts(user: user, category: category).limit(limit)
+    @recent_posts ||= {}
+    @recent_posts[category || 'posts'] ||= Effective::Post.posts(user: user, category: category).limit(limit)
   end
 
   def render_recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)

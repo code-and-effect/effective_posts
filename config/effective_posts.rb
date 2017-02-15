@@ -48,7 +48,7 @@ EffectivePosts.setup do |config|
   # Configure the Layout per controller, or all at once
   config.layout = {
     posts: 'application',
-    admin: 'application'
+    admin: 'admin'
   }
 
   # SimpleForm Options

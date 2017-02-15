@@ -15,7 +15,7 @@ class EffectivePostsMailerPreview < ActionMailer::Preview
       category: EffectivePosts.categories.first.presence || 'posts',
       published_at: Time.zone.now,
       draft: true,
-      content: 'This is a new post that has been submitted by a public user.'
+      body: 'This is a new post that has been submitted by a public user.'
     )
   end
 
