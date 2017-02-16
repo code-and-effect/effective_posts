@@ -6,7 +6,7 @@ module EffectivePostsHelper
     opts ||= {}
 
     if EffectivePosts.use_category_routes
-      "/#{category}" + effective_posts.post_path(post, opts)
+      effective_posts.post_path(post, opts).sub('/posts', "/#{category}")
     else
       effective_posts.post_path(post, opts.merge(category: category))
     end
@@ -47,7 +47,7 @@ module EffectivePostsHelper
 
   def read_more_link(post, options)
     content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more'), effective_posts.post_path(post), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
+      link_to((options.delete(:label) || 'Read more'), effective_post_path(post), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
     end
   end
   alias_method :readmore_link, :read_more_link
@@ -71,15 +71,27 @@ module EffectivePostsHelper
 
   ### Recent Posts
 
-  def recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)
+  def recent_posts(user: current_user, category: 'posts', limit: EffectivePosts.per_page)
     @recent_posts ||= {}
-    @recent_posts[category || 'posts'] ||= Effective::Post.posts(user: user, category: category).limit(limit)
+    @recent_posts[category] ||= Effective::Post.posts(user: user, category: category).limit(limit)
   end
 
-  def render_recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)
+  def render_recent_posts(user: current_user, category: 'posts', limit: EffectivePosts.per_page)
     posts = recent_posts(user: user, category: category, limit: limit)
-
     render partial: '/effective/posts/recent_posts', locals: { posts: posts }
+  end
+
+  ### Upcoming Events
+
+  def upcoming_events(user: current_user, category: 'events', limit: EffectivePosts.per_page)
+    @upcoming_events ||= {}
+    @upcoming_events[category] ||= Effective::Post.posts(user: user, category: category).limit(limit)
+      .reorder(:start_at).where('start_at > ?', Time.zone.now)
+  end
+
+  def render_upcoming_events(user: current_user, category: 'events', limit: EffectivePosts.per_page)
+    posts = upcoming_events(user: user, category: category, limit: limit)
+    render partial: '/effective/posts/upcoming_events', locals: { posts: posts }
   end
 
   ### Submitting a Post

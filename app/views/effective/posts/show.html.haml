@@ -1,10 +1,30 @@
 .effective-post
-  %h2.post-title
-    %a{href: effective_post_path(@post)}
-      = simple_effective_region @post, :title do
-        = @post.title
+  %h2.post-title= link_to @post, effective_post_path(@post)
 
   %p.post-meta= post_meta(@post)
+
+  - if post.category == 'events'
+    %table.table.post-events
+      %tbody
+        - if post.start_at.present?
+          %tr
+            %th Starts
+            %td= post.start_at
+
+        - if post.end_at.present?
+          %tr
+            %th Ends
+            %td= post.start_at
+
+        - if post.location.present?
+          %tr
+            %th Location
+            %td= post.location
+
+        - if post.website_href.present? && post.website_name.present?
+          %tr
+            %th Website
+            %td= link_to post.website_name, post.website_href
 
   .post-body.post-content
     = effective_region @post, :body do

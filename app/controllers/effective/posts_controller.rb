@@ -11,6 +11,10 @@ module Effective
       @posts ||= Effective::Post.posts(user: current_user, category: params[:category])
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
 
+      if params[:category] == 'events'
+        @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
+      end
+
       EffectivePosts.authorized?(self, :index, Effective::Post)
 
       @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize

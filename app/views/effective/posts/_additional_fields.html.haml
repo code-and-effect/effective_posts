@@ -1,2 +1,19 @@
--# intentionally left blank
--# = form.input :start_at
+-# Adding additional .effective-posts-category-#{category} will correctly show/hide on Posts#new forms
+
+- # Event specific fields
+.effective-post-category-events.well{style: ('display: none' unless f.object.category == 'events')}
+  %h4 Event Information
+  = form.input :start_at, as: (:effective_date_time_picker if defined?(EffectiveFormInputs)),
+    required: true,
+    hint: 'Display a start time for this event.'
+
+  = form.input :end_at, as: (:effective_date_time_picker if defined?(EffectiveFormInputs)),
+    hint: 'Display an end time of this event.'
+
+  = form.input :location, hint: 'Display a location where this event is taking place.'
+
+  = form.input :website_name, label: 'External website',
+    placeholder: 'Buy Tickets', hint: 'The label of an external website.'
+
+  = form.input :website_href, label: 'External website address',
+    placeholder: 'http://', hint: 'The address of an external website (start with http:// or https://).'

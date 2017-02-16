@@ -1,4 +1,4 @@
-= simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
+= simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(url: (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
   = f.input :title, hint: 'The title of your post.'
 
   - if Array(EffectivePosts.categories).length > 0
@@ -14,11 +14,11 @@
   = f.input :published_at,
     as: (defined?(EffectiveFormInputs) ? :effective_date_time_picker : :datetime),
     label: 'Publish date',
-    hint: 'When your post will be displayed on the website.'
+    hint: 'When should this be displayed on the website.'
 
   = f.input :body,
     as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
-    hint: 'The body of your post.',
+    hint: 'The body of your post. You can add content here, or with the full screen editor on the next page.',
     toolbar: 'simple',
     required: true
 

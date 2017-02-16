@@ -3,15 +3,15 @@ EffectivePosts.setup do |config|
 
   # Every post must belong to one or more category.
   # Don't use the category :posts
-  config.categories = [:blog, :news]
+  config.categories = [:news, :events]
 
   # Create top level routes for each category
   # Should each of the above categories have a top level route created for it
   # For example:
-  #   Visiting /blog will display all posts created with the :blog category
-  #   Visiting /news will display all posts created with the :news category
+  #   Visiting /news will display all posts created with the 'news' category
+  #   Visiting /events will display all posts created with the 'events' category
   #
-  # Regardless of this setting, posts will always be available via /posts?category=blog
+  # Regardless of this setting, posts will always be available via /posts?category=events
   config.use_category_routes = true
 
   # Number of posts displayed per page (Kaminari)
@@ -80,7 +80,7 @@ EffectivePosts.setup do |config|
   config.submissions_require_approval = true
 
   # The Thank you message when they submit a post
-  config.submissions_note = "News & Event submitted! A confirmation email has been sent to the AALA office. When approved, your submission will appear on the website."
+  config.submissions_note = "News & Event submitted! A confirmation email has been sent to the website owner. When approved, your submission will appear on the website."
 
   # Mailer Settings
   # effective_posts will send the admin an email when a post is submitted

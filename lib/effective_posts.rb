@@ -44,7 +44,11 @@ module EffectivePosts
   end
 
   def self.permitted_params
-    @@permitted_params ||= [:title, :draft, :category, :published_at, :body, roles: []]
+    @@permitted_params ||= [
+      :title, :draft, :category, :published_at, :body, :tags, :extra,
+      :start_at, :end_at, :location, :website_name, :website_href,
+      roles: []
+    ]
   end
 
 end
