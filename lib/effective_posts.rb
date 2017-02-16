@@ -47,8 +47,8 @@ module EffectivePosts
     @@permitted_params ||= [
       :title, :draft, :category, :published_at, :body, :tags, :extra,
       :start_at, :end_at, :location, :website_name, :website_href,
-      roles: []
-    ]
+      (EffectiveAssets.permitted_params if defined?(EffectiveAssets)), roles: []
+    ].compact
   end
 
 end

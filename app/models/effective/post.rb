@@ -1,6 +1,7 @@
 module Effective
   class Post < ActiveRecord::Base
     acts_as_role_restricted if defined?(EffectiveRoles)
+    acts_as_asset_box :image if defined?(EffectiveAssets)
     acts_as_regionable
 
     self.table_name = EffectivePosts.posts_table_name.to_s
@@ -59,6 +60,10 @@ module Effective
 
     def approved?
       draft == false
+    end
+
+    def event?
+      category == 'events'
     end
 
     def body

@@ -51,6 +51,9 @@ EffectivePosts.setup do |config|
     admin: 'admin'
   }
 
+  # Add additional permitted params
+  # config.permitted_params += [:additional_field]
+
   # SimpleForm Options
   # This Hash of options will be passed into any client facing simple_form_for() calls
   config.simple_form_options = {}
