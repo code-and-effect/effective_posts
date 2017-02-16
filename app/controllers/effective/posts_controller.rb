@@ -15,6 +15,11 @@ module Effective
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
       end
 
+      if params[:search].present?
+        search = params[:search].permit(EffectivePosts.permitted_params).delete_if { |k, v| v.blank? }
+        @posts = @posts.where(search) if search.present?
+      end
+
       EffectivePosts.authorized?(self, :index, Effective::Post)
 
       @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize

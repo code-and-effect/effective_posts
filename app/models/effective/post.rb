@@ -39,6 +39,10 @@ module Effective
       scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
       scope = scope.includes(:regions).order(published_at: :desc)
 
+      if defined?(EffectiveAssets)
+        scope = scope.includes(attachments: :asset)
+      end
+
       if user.present? && user.respond_to?(:roles) && defined?(EffectiveRoles)
         scope = scope.for_role(user.roles)
       end
