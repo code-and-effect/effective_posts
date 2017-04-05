@@ -41,8 +41,10 @@ EffectivePosts.setup do |config|
   #
   # Or disable the check completely:
   # config.authorization_method = false
-  config.authorization_method = Proc.new { |controller, action, resource| authorize!(action, resource) && resource.roles_permit?(current_user) } # CanCanCan
-  # Use effective_roles:  resource.roles_permit?(current_user)
+  config.authorization_method = Proc.new do |controller, action, resource|
+    authorize!(action, resource)
+    resource.respond_to?(:roles_permit?) ? resource.roles_permit?(current_user) : true
+  end
 
   # Layout Settings
   # Configure the Layout per controller, or all at once

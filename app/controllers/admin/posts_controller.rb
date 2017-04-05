@@ -1,12 +1,17 @@
 module Admin
   class PostsController < ApplicationController
-    before_filter :authenticate_user! if respond_to?(:authenticate_user!)   # This is devise, ensure we're logged in.
+    before_action(:authenticate_user!) # Devise
 
     layout (EffectivePosts.layout.kind_of?(Hash) ? EffectivePosts.layout[:admin] : EffectivePosts.layout)
 
     def index
       @page_title = 'Posts'
-      @datatable = Effective::Datatables::Posts.new()
+
+      if Gem::Version.new(EffectiveDatatables::VERSION) < Gem::Version.new('3.0')
+        @datatable = Effective::Datatables::Posts.new()
+      else
+        @datatable = EffectivePostsDatatable.new(self)
+      end
 
       authorize_effective_posts!
     end
