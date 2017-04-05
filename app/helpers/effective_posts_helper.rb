@@ -21,7 +21,7 @@ module EffectivePostsHelper
       'Published',
       "on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}",
       ("to #{link_to_post_category(post.category)}" if Array(EffectivePosts.categories).length > 1),
-      ("by #{post.user.to_s.presence || 'Unknown'}" if EffectivePosts.post_meta_author)
+      ("by #{post.user.to_s.presence || 'Unknown'}" if EffectivePosts.post_meta_author && post.user.present?)
     ].compact.join(' ').html_safe
   end
 
