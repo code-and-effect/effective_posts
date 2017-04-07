@@ -32,4 +32,5 @@
     - if defined?(EffectiveRegions)
       = f.button :submit, 'Save and Edit Content', data: { disable_with: 'Saving...' }
     = f.button :submit, 'Save and Add New', data: { disable_with: 'Saving...' }
+    = f.button :submit, 'Save and Duplicate', data: { disable_with: 'Saving...' }
     = link_to 'Cancel', effective_posts.admin_posts_path

@@ -91,6 +91,24 @@ module Effective
       send_email(:post_submitted_to_admin, to_param)
     end
 
+    # Returns a duplicated post object, or throws an exception
+    def duplicate!
+      Post.new(attributes.except('id', 'updated_at', 'created_at')).tap do |post|
+        post.title = post.title + ' (Copy)'
+        post.draft = true
+
+        if defined?(EffectiveAssets) && image.present?
+          post.add_to_asset_box(:image, image)
+        end
+
+        regions.each do |region|
+          post.regions.build(region.attributes.except('id', 'updated_at', 'created_at'))
+        end
+
+        post.save!
+      end
+    end
+
     private
 
     def send_email(email, *mailer_args)

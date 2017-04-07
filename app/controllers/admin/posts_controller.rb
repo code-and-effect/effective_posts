@@ -66,6 +66,17 @@ module Admin
         elsif params[:commit] == 'Save and Add New'
           flash[:success] = 'Successfully updated post'
           redirect_to effective_posts.new_admin_post_path
+        elsif params[:commit] == 'Save and Duplicate'
+          begin
+            post = @post.duplicate!
+            flash[:success] = 'Successfully saved and duplicated post.'
+            flash[:info] = "You are now editting the duplicated post. This new post has been created as a Draft."
+          rescue => e
+            flash.delete(:success)
+            flash[:danger] = "Unable to duplicate post: #{e.message}"
+          end
+
+          redirect_to effective_posts.edit_admin_post_path(post || @post)
         else
           flash[:success] = 'Successfully updated post'
           redirect_to effective_posts.edit_admin_post_path(@post)
