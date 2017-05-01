@@ -19,6 +19,10 @@ unless Gem::Version.new(EffectiveDatatables::VERSION) < Gem::Version.new('3.0')
         col :draft
       end
 
+      col :start_at
+      col :end_at, visible: false
+      col :location, visible: false
+
       col :created_at, label: 'Submitted at', visible: false
 
       actions_col partial: '/admin/posts/actions', partial_as: :post

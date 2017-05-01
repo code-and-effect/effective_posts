@@ -21,6 +21,10 @@ if Gem::Version.new(EffectiveDatatables::VERSION) < Gem::Version.new('3.0')
             table_column :draft
           end
 
+          table_column :start_at
+          table_column :end_at, visible: false
+          table_column :location, visible: false
+
           table_column :created_at, label: 'Submitted at', visible: false
 
           table_column :actions, sortable: false, filter: false, partial: '/admin/posts/actions'
