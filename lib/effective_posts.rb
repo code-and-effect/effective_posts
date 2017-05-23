@@ -1,4 +1,3 @@
-require 'haml-rails'
 require 'kaminari'
 require 'nokogiri'
 require 'effective_datatables'
