@@ -32,7 +32,7 @@ module Admin
       authorize_effective_posts!
 
       if @post.save
-        if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
+        if params[:commit] == 'Save and Edit Content'
           redirect_to effective_regions.edit_path(effective_posts.post_path(@post), :exit => effective_posts.edit_admin_post_path(@post))
         elsif params[:commit] == 'Save and Add New'
           flash[:success] = 'Successfully created post'
@@ -61,7 +61,7 @@ module Admin
       authorize_effective_posts!
 
       if @post.update_attributes(post_params)
-        if params[:commit] == 'Save and Edit Content' && defined?(EffectiveRegions)
+        if params[:commit] == 'Save and Edit Content'
           redirect_to effective_regions.edit_path(effective_posts.post_path(@post), :exit => effective_posts.edit_admin_post_path(@post))
         elsif params[:commit] == 'Save and Add New'
           flash[:success] = 'Successfully updated post'
