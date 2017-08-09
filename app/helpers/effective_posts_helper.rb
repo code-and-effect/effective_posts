@@ -71,13 +71,24 @@ module EffectivePostsHelper
 
   ### Recent Posts
 
-  def recent_posts(user: current_user, category: 'posts', limit: EffectivePosts.per_page)
+  def recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)
     @recent_posts ||= {}
     @recent_posts[category] ||= Effective::Post.posts(user: user, category: category).limit(limit)
   end
 
-  def render_recent_posts(user: current_user, category: 'posts', limit: EffectivePosts.per_page)
+  def render_recent_posts(user: current_user, category: nil, limit: EffectivePosts.per_page)
     posts = recent_posts(user: user, category: category, limit: limit)
+    render partial: '/effective/posts/recent_posts', locals: { posts: posts }
+  end
+
+  ### Recent News
+  def recent_news(user: current_user, category: 'news', limit: EffectivePosts.per_page)
+    @recent_news ||= {}
+    @recent_news[category] ||= Effective::Post.posts(user: user, category: category).limit(limit)
+  end
+
+  def render_recent_news(user: current_user, category: 'news', limit: EffectivePosts.per_page)
+    posts = recent_news(user: user, category: category, limit: limit)
     render partial: '/effective/posts/recent_posts', locals: { posts: posts }
   end
 
