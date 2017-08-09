@@ -8,7 +8,7 @@
 = link_to effective_post_path(post, (post.draft? ? {preview: true} : nil)), title: 'View', target: '_blank' do
   %span.glyphicon.glyphicon-eye-open
 
-- if defined?(EffectiveRegions)
+- if EffectivePosts.use_fullscreen_editor
   = link_to effective_post_path(post, edit: true), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank' do
     %span.glyphicon.glyphicon-edit
 

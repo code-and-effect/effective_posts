@@ -19,6 +19,7 @@ module EffectivePosts
   mattr_accessor :use_category_routes
 
   mattr_accessor :use_effective_roles
+  mattr_accessor :use_fullscreen_editor
 
   mattr_accessor :per_page
   mattr_accessor :post_meta_author
