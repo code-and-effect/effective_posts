@@ -1,13 +1,13 @@
 = simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(url: (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
   = f.input :title, hint: 'The title of your post.'
 
-  - if Array(EffectivePosts.categories).length > 0
+  - if Array(EffectivePosts.categories).length > 1
     = f.input :category,
       as: (defined?(EffectiveFormInputs) ? :effective_select : :select),
       collection: EffectivePosts.categories,
       include_blank: false
   - else
-    = f.input :category, as: :hidden, input_html: { value: 'posts' }
+    = f.input :category, as: :hidden, input_html: { value: (EffectivePosts.categories.first || 'posts') }
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
@@ -22,6 +22,6 @@
     toolbar: 'simple',
     required: true
 
-  %p.effective-post-actions.pull-right
-    = f.button :submit, 'Save', data: { disable_with: 'Saving...' }
+  .form-actions
+    = f.button :submit, 'Save', data: { disable_with: 'Saving...' }, class: 'btn btn-primary'
     = link_to 'Cancel', effective_posts.posts_path

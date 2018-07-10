@@ -9,12 +9,12 @@
         - if @post.start_at.present?
           %tr
             %th Starts
-            %td= @post.start_at
+            %td= @post.start_at.stftime('%F %H:%M')
 
         - if @post.end_at.present?
           %tr
             %th Ends
-            %td= @post.start_at
+            %td= @post.end_at.stftime('%F %H:%M')
 
         - if @post.location.present?
           %tr

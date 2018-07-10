@@ -1,13 +1,13 @@
 = simple_form_for(post, (EffectivePosts.admin_simple_form_options || {}).merge(:url => (post.persisted? ? effective_posts.admin_post_path(post.id) : effective_posts.admin_posts_path))) do |f|
   = f.input :title, hint: 'The title of your post.'
 
-  - if Array(EffectivePosts.categories).length > 0
+  - if Array(EffectivePosts.categories).length > 1
     = f.input :category,
       as: (defined?(EffectiveFormInputs) ? :effective_select : :select),
       collection: EffectivePosts.categories,
       include_blank: false
   - else
-    = f.input :category, as: :hidden, input_html: { value: 'posts' }
+    = f.input :category, as: :hidden, input_html: { value: (EffectivePosts.categories.first || 'posts') }
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
@@ -27,10 +27,10 @@
   - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
     = f.input :roles, collection: EffectiveRoles.roles_collection(f.object), as: :check_boxes, hint: '* leave blank for a regular public post that anyone can view'
 
-  .effective-post-actions.pull-right
-    = f.button :submit, 'Save', data: { disable_with: 'Saving...' }
+  .form-actions.effective-post-actions
+    = f.button :submit, 'Save', data: { disable_with: 'Saving...' }, class: 'btn btn-primary'
     - if EffectivePosts.use_fullscreen_editor
-      = f.button :submit, 'Save and Edit Content', data: { disable_with: 'Saving...' }
-    = f.button :submit, 'Save and Add New', data: { disable_with: 'Saving...' }
-    = f.button :submit, 'Save and Duplicate', data: { disable_with: 'Saving...' }
+      = f.button :submit, 'Save and Edit Content', data: { disable_with: 'Saving...' }, class: 'btn btn-primary'
+    = f.button :submit, 'Save and Add New', data: { disable_with: 'Saving...' }, class: 'btn btn-default'
+    = f.button :submit, 'Save and Duplicate', data: { disable_with: 'Saving...' }, class: 'btn btn-default'
     = link_to 'Cancel', effective_posts.admin_posts_path
