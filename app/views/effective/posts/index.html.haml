@@ -1,9 +1,7 @@
-- if EffectivePosts.submissions_enabled
-  %p.text-right= link_to 'Submit New Post', effective_posts.new_post_path, class: 'btn btn-primary'
+= render 'layout' do
+  %nav= paginate @posts
 
-%nav= paginate @posts
+  .effective-posts
+    = render partial: @posts, spacer_template: 'spacer'
 
-.effective-posts
-  = render partial: @posts, spacer_template: 'spacer'
-
-%nav= paginate @posts
+  %nav= paginate @posts

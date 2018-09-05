@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sass'
   s.add_dependency 'kaminari'
   s.add_dependency 'nokogiri'
+  s.add_dependency 'effective_bootstrap'
   s.add_dependency 'effective_ckeditor'
   s.add_dependency 'effective_datatables', '>= 4.0.0'
   s.add_dependency 'effective_regions'

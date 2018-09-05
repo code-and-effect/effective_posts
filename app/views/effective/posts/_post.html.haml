@@ -1,7 +1,7 @@
 .effective-post
   %h2.post-title= link_to post, effective_post_path(post)
 
-  %p.post-meta= post_meta(post)
+  %p.post-meta= post_meta(post, author: false)
 
   - if post.category == 'events'
     %table.table.post-events
@@ -14,7 +14,7 @@
         - if post.end_at.present?
           %tr
             %th Ends
-            %td= post.start_at
+            %td= post.end_at
 
         - if post.location.present?
           %tr
@@ -26,4 +26,7 @@
             %th Website
             %td= link_to post.website_name, post.website_href
 
-  .post-content.post-excerpt= post_excerpt(post)
+  - if block_given?
+    = yield
+  - else
+    .post-content.post-excerpt= post_excerpt(post)

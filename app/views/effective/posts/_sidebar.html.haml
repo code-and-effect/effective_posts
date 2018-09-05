@@ -1,0 +1,28 @@
+- posts = recent_posts(category: nil, limit: 5)
+%h4.sidebar-title Recent Posts
+%ul.nav.flex-column
+  - posts.each do |post|
+    = nav_link_to post, effective_post_path(post)
+
+  - if posts.length == 0
+    = nav_link_to 'None', effective_posts.posts_path, class: 'disabled'
+
+- if EffectivePosts.categories.present?
+  - categories = EffectivePosts.categories
+  %h4.sidebar-title Categories
+  %ul.nav.flex-column
+    = nav_link_to 'All Posts', effective_posts.posts_path
+
+    - categories.each do |category|
+      = nav_link_to category.to_s.titleize, effective_post_category_path(category)
+
+- if params[:category]
+  - category_posts = recent_posts(category: params[:category], limit: 5)
+  %h4.sidebar-title Recent #{params[:category].titleize}
+  %ul.nav.flex-column
+    - category_posts.each do |post|
+      = nav_link_to post, effective_post_path(post)
+
+    - if category_posts.length == 0
+      = nav_link_to 'None', effective_posts.posts_path, class: 'disabled'
+
