@@ -7,11 +7,19 @@ Built ontop of effective_regions for post content entry and Kaminari for paginat
 Rails 3.2.x and 4.x
 
 
+## effective_posts 1.0
+
+This is the 1.0 series of effective_posts.
+
+This requires Twitter Bootstrap 4 and Rails 5.1+
+
+Please check out [Effective Posts 0.x](https://github.com/code-and-effect/effective_posts/tree/bootstrap3) for more information using this gem with Bootstrap 3.
+
 ## Getting Started
 
 Please first install the [effective_regions](https://github.com/code-and-effect/effective_regions) and [effective_datatables](https://github.com/code-and-effect/effective_datatables) gems.
 
-Please download and install [Twitter Bootstrap3](http://getbootstrap.com)
+Please download and install [Twitter Bootstrap4](http://getbootstrap.com)
 
 Add to your Gemfile:
 

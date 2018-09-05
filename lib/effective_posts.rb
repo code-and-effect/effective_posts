@@ -37,17 +37,26 @@ module EffectivePosts
   end
 
   def self.authorized?(controller, action, resource)
-    if authorization_method.respond_to?(:call) || authorization_method.kind_of?(Symbol)
-      raise Effective::AccessDenied.new() unless (controller || self).instance_exec(controller, action, resource, &authorization_method)
+    @_exceptions ||= [Effective::AccessDenied, (CanCan::AccessDenied if defined?(CanCan)), (Pundit::NotAuthorizedError if defined?(Pundit))].compact
+
+    return !!authorization_method unless authorization_method.respond_to?(:call)
+    controller = controller.controller if controller.respond_to?(:controller)
+
+    begin
+      !!(controller || self).instance_exec((controller || self), action, resource, &authorization_method)
+    rescue *@_exceptions
+      false
     end
-    true
+  end
+
+  def self.authorize!(controller, action, resource)
+    raise Effective::AccessDenied.new('Access Denied', action, resource) unless authorized?(controller, action, resource)
   end
 
   def self.permitted_params
     @@permitted_params ||= [
       :title, :draft, :category, :published_at, :body, :tags, :extra,
-      :start_at, :end_at, :location, :website_name, :website_href,
-      (EffectiveAssets.permitted_params if defined?(EffectiveAssets)), roles: []
+      :start_at, :end_at, :location, :website_name, :website_href, roles: []
     ].compact
   end
 

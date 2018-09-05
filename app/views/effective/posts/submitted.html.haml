@@ -2,7 +2,7 @@
 
 %p= EffectivePosts.submissions_note
 
-- if (EffectivePosts.authorized?(controller, :edit, @post) rescue false)
+- if EffectivePosts.authorized?(controller, :edit, @post)
   %p= link_to 'Edit Post', effective_posts.edit_post_path(@post), class: 'btn btn-primary btn-edit-post'
 
 %hr

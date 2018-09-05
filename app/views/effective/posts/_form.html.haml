@@ -1,27 +1,21 @@
-= simple_form_for(post, (EffectivePosts.simple_form_options || {}).merge(url: (post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path))) do |f|
-  = f.input :title, hint: 'The title of your post.'
+= effective_form_with(model: post, url: post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path) do |f|
+  = f.text_field :title, hint: 'The title of your post.'
 
   - if Array(EffectivePosts.categories).length > 1
-    = f.input :category,
-      as: (defined?(EffectiveFormInputs) ? :effective_select : :select),
-      collection: EffectivePosts.categories,
-      include_blank: false
+    = f.select :category, EffectivePosts.categories
   - else
-    = f.input :category, as: :hidden, input_html: { value: (EffectivePosts.categories.first || 'posts') }
+    = f.hidden_field :category, (EffectivePosts.categories.first || 'posts')
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
-  = f.input :published_at,
-    as: (defined?(EffectiveFormInputs) ? :effective_date_time_picker : :datetime),
-    label: 'Publish date',
-    hint: 'When should this be displayed on the website.'
+  = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
 
-  = f.input :body,
-    as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
-    hint: 'The body of your post. You can add content here, or with the full screen editor on the next page.',
-    toolbar: 'simple',
-    required: true
+  = f.text_area :body
 
-  .form-actions
-    = f.button :submit, 'Save', data: { disable_with: 'Saving...' }, class: 'btn btn-primary'
-    = link_to 'Cancel', effective_posts.posts_path
+  / = f.input :body,
+  /   as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
+  /   hint: 'The body of your post. You can add content here, or with the full screen editor on the next page.',
+  /   toolbar: 'simple',
+  /   required: true
+
+  = f.submit 'Save'

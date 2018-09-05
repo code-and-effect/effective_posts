@@ -5,8 +5,6 @@ module Effective
     before_action :authenticate_user!, only: [:new, :create, :edit, :update],
       if: -> { EffectivePosts.submissions_require_current_user }
 
-    after_action :monkey_patch_for_kaminari, only: [:index]
-
     def index
       @posts ||= Effective::Post.posts(user: current_user, category: params[:category])
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
@@ -20,7 +18,7 @@ module Effective
         @posts = @posts.where(search) if search.present?
       end
 
-      EffectivePosts.authorized?(self, :index, Effective::Post)
+      EffectivePosts.authorize!(self, :index, Effective::Post)
 
       @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize
     end
@@ -30,10 +28,10 @@ module Effective
       @post = @posts.find(params[:id])
 
       if @post.respond_to?(:roles_permit?)
-        raise Effective::AccessDenied unless @post.roles_permit?(current_user)
+        raise Effective::AccessDenied.new('Access Denied', :show, @post) unless @post.roles_permit?(current_user)
       end
 
-      EffectivePosts.authorized?(self, :show, @post)
+      EffectivePosts.authorize!(self, :show, @post)
 
       @page_title = @post.title
     end
@@ -43,7 +41,7 @@ module Effective
       @post ||= Effective::Post.new(published_at: Time.zone.now)
       @page_title = 'New Post'
 
-      EffectivePosts.authorized?(self, :new, @post)
+      EffectivePosts.authorize!(self, :new, @post)
     end
 
     def create
@@ -51,7 +49,7 @@ module Effective
       @post.user = current_user if defined?(current_user)
       @post.draft = (EffectivePosts.submissions_require_approval == true)
 
-      EffectivePosts.authorized?(self, :create, @post)
+      EffectivePosts.authorize!(self, :create, @post)
 
       if @post.save
         @page_title ||= 'Post Submitted'
@@ -73,7 +71,7 @@ module Effective
       @post ||= Effective::Post.find(params[:id])
       @page_title ||= 'Edit Post'
 
-      EffectivePosts.authorized?(self, :edit, @post)
+      EffectivePosts.authorize!(self, :edit, @post)
     end
 
     def update
@@ -81,7 +79,7 @@ module Effective
       draft_was = @post.draft
       @post.draft = (EffectivePosts.submissions_require_approval == true)
 
-      EffectivePosts.authorized?(self, :update, @post)
+      EffectivePosts.authorize!(self, :update, @post)
 
       if @post.update_attributes(post_params)
         @page_title ||= 'Post Submitted'
@@ -102,7 +100,7 @@ module Effective
     def destroy
       @post ||= Effective::Post.find(params[:id])
 
-      EffectivePosts.authorized?(self, :destroy, @post)
+      EffectivePosts.authorize!(self, :destroy, @post)
 
       if @post.destroy
         flash[:success] = 'Successfully deleted post'
@@ -117,10 +115,6 @@ module Effective
 
     def post_params
       params.require(:effective_post).permit(EffectivePosts.permitted_params)
-    end
-
-    def monkey_patch_for_kaminari
-      @template = @template.tap { |template| template.extend(EffectiveKaminariHelper) }
     end
 
   end

@@ -12,16 +12,30 @@ module EffectivePostsHelper
     end
   end
 
+  def effective_post_category_path(category, opts = nil)
+    return effective_posts.posts_path unless category.present?
+
+    category = category.to_s.downcase
+    opts ||= {}
+
+    if EffectivePosts.use_category_routes
+      "/#{category}"
+    else
+      effective_posts.posts_path(opts.merge(category: category))
+    end
+  end
+
   def render_post(post)
     render(partial: 'effective/posts/post', locals: { post: post })
   end
 
-  def post_meta(post)
+  def post_meta(post, date: true, datetime: false, category: true, author: true)
     [
       'Published',
-      "on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}",
-      ("to #{link_to_post_category(post.category)}" if Array(EffectivePosts.categories).length > 1),
-      ("by #{post.user.to_s.presence || 'Unknown'}" if EffectivePosts.post_meta_author && post.user.present?)
+      ("on #{post.published_at.strftime('%B %d, %Y')}" if date),
+      ("on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime),
+      ("to #{link_to_post_category(post.category)}" if category && Array(EffectivePosts.categories).length > 1),
+      ("by #{post.user.to_s.presence || 'Unknown'}" if author && EffectivePosts.post_meta_author && post.user.present?)
     ].compact.join(' ').html_safe
   end
 

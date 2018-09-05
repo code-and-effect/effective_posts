@@ -1,7 +1,6 @@
 module Effective
   class Post < ActiveRecord::Base
-    acts_as_role_restricted if defined?(EffectiveRoles)
-    acts_as_asset_box :image if defined?(EffectiveAssets)
+    acts_as_role_restricted if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
     acts_as_regionable
 
     self.table_name = EffectivePosts.posts_table_name.to_s
@@ -36,15 +35,12 @@ module Effective
     scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
     scope :posts, -> (user: nil, category: nil, drafts: false) {
-      scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
-      scope = scope.includes(:regions).order(published_at: :desc)
+      scope = all.includes(:regions).order(published_at: :desc)
 
-      if defined?(EffectiveAssets)
-        scope = scope.includes(attachments: :asset)
-      end
-
-      if user.present? && user.respond_to?(:roles) && defined?(EffectiveRoles)
-        scope = scope.for_role(user.roles)
+      if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
+        if user.present? && user.respond_to?(:roles)
+          scope = scope.for_role(user.roles)
+        end
       end
 
       if category.present?
@@ -96,10 +92,6 @@ module Effective
       Post.new(attributes.except('id', 'updated_at', 'created_at')).tap do |post|
         post.title = post.title + ' (Copy)'
         post.draft = true
-
-        if defined?(EffectiveAssets) && image.present?
-          post.add_to_asset_box(:image, image)
-        end
 
         regions.each do |region|
           post.regions.build(region.attributes.except('id', 'updated_at', 'created_at'))

@@ -56,21 +56,6 @@ EffectivePosts.setup do |config|
   # Add additional permitted params
   # config.permitted_params += [:additional_field]
 
-  # SimpleForm Options
-  # This Hash of options will be passed into any client facing simple_form_for() calls
-  config.simple_form_options = {}
-  config.admin_simple_form_options = {}  # For the /admin/posts/new form
-
-  # config.simple_form_options = {
-  #   html: {class: 'form-horizontal'},
-  #   wrapper: :horizontal_form,
-  #   wrapper_mappings: {
-  #     boolean: :horizontal_boolean,
-  #     check_boxes: :horizontal_radio_and_checkboxes,
-  #     radio_buttons: :horizontal_radio_and_checkboxes
-  #   }
-  # }
-
   # Display the effective roles 'choose roles' input when an admin creates a new post
   config.use_effective_roles = true
 

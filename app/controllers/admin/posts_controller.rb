@@ -6,12 +6,7 @@ module Admin
 
     def index
       @page_title = 'Posts'
-
-      if Gem::Version.new(EffectiveDatatables::VERSION) < Gem::Version.new('3.0')
-        @datatable = Effective::Datatables::Posts.new()
-      else
-        @datatable = EffectivePostsDatatable.new(self)
-      end
+      @datatable = EffectivePostsDatatable.new(self)
 
       authorize_effective_posts!
     end
@@ -126,8 +121,8 @@ module Admin
     private
 
     def authorize_effective_posts!
-      EffectivePosts.authorized?(self, :admin, :effective_posts)
-      EffectivePosts.authorized?(self, action_name.to_sym, @post || Effective::Post)
+      EffectivePosts.authorize!(self, :admin, :effective_posts)
+      EffectivePosts.authorize!(self, action_name.to_sym, @post || Effective::Post)
     end
 
     def post_params
