@@ -21,7 +21,7 @@
   = f.input :body,
     as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
     hint: 'The body of your post.',
-    toolbar: 'simple',
+    toolbar: 'full',
     required: true
 
   - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
