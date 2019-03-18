@@ -1,3 +1,3 @@
 module EffectivePosts
-  VERSION = '1.0.0'.freeze
+  VERSION = '0.5.9'.freeze
 end
