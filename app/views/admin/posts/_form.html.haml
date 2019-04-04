@@ -1,5 +1,6 @@
 = effective_form_with(model: post, url: post.persisted? ? effective_posts.admin_post_path(post.id) : effective_posts.admin_posts_path) do |f|
   = f.text_field :title, hint: 'The title of your post.'
+  = f.text_field :description, hint: 'Will be used for the post excerpt and meta tags.', maxlength: 150
 
   - if Array(EffectivePosts.categories).length > 1
     = f.select :category, EffectivePosts.categories
@@ -12,7 +13,8 @@
 
   = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
-  = f.editor :body, delta: false
+  - unless EffectivePosts.use_fullscreen_editor
+    = f.ck_editor :body
 
   - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
     = f.checks :roles, EffectiveRoles.roles_collection(f.object), hint: '* leave blank for a regular public post that anyone can view'
@@ -21,5 +23,5 @@
     = f.save 'Save'
     - if EffectivePosts.use_fullscreen_editor
       = f.save 'Save and Edit Content'
-    = f.save 'Save and Add New'
+    = f.save 'Save and View'
     = f.save 'Save and Duplicate'

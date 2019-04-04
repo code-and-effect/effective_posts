@@ -9,10 +9,14 @@ module Effective
 
     # Attributes
     # title             :string
+    # description       :string
+
     # category          :string
+
     # draft             :boolean
     # published_at      :datetime
     # tags              :text
+    
     # roles_mask        :integer
 
     # Event Fields
@@ -32,6 +36,7 @@ module Effective
 
     scope :drafts, -> { where(draft: true) }
     scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
+    scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
     scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
     scope :posts, -> (user: nil, category: nil, drafts: false) {
@@ -56,6 +61,10 @@ module Effective
 
     def to_s
       title.presence || 'New Post'
+    end
+
+    def published?
+      !draft? && published_at < Time.zone.now
     end
 
     def approved?

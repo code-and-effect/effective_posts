@@ -4,6 +4,8 @@ class CreateEffectivePosts < ActiveRecord::Migration[4.2]
       t.integer :user_id
 
       t.string :title
+      t.string :description
+      
       t.string :category
 
       t.boolean :draft, :default => false

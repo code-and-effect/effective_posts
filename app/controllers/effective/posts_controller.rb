@@ -5,8 +5,31 @@ module Effective
     before_action :authenticate_user!, only: [:new, :create, :edit, :update],
       if: -> { EffectivePosts.submissions_require_current_user }
 
+    def set_admin_preview_flash!
+      return unless EffectivePosts.authorized?(self, :admin, :effective_posts)
+
+      if params[:action] == 'index' && (unpublished = Effective::Post.unpublished.length) > 0
+        if admin_preview?
+          flash.now[:warning] = "<a href='#{effective_posts.posts_path}' class='alert-link'>Click here to return to the normal posts page</a>."
+        else
+          flash.now[:warning] = "Hi Admin! #{unpublished} #{unpublished > 1 ? 'unpublished posts are' : 'unpublished post is'} hidden from view. " +
+            "<a href='#{effective_posts.posts_path(preview: true)}' class='alert-link'>Click here to view unpublished posts</a>."
+        end
+      end
+
+      if params[:action] == 'show' 
+        flash.now[:warning] = [
+          'Hi Admin!',
+          ('You are viewing a post that is normally hidden from view.' unless @post.published?),
+          'Click here to',
+          ("<a href='#{effective_regions.edit_path(effective_posts.post_path(@post), exit: effective_posts.post_path(@post, preview: (true unless @post.published?)))}' class='alert-link'>edit post content</a> or" unless admin_edit?),
+          ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>edit settings</a>.")
+        ].compact.join(' ')
+      end
+    end
+
     def index
-      @posts ||= Effective::Post.posts(user: current_user, category: params[:category])
+      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: admin_edit_or_preview?)
       @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
 
       if params[:category] == 'events'
@@ -20,11 +43,13 @@ module Effective
 
       EffectivePosts.authorize!(self, :index, Effective::Post)
 
+      set_admin_preview_flash! 
+
       @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize
     end
 
     def show
-      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: (params[:edit].to_s == 'true' || params[:preview].to_s == 'true'))
+      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: admin_edit_or_preview?)
       @post = @posts.find(params[:id])
 
       if @post.respond_to?(:roles_permit?)
@@ -32,6 +57,8 @@ module Effective
       end
 
       EffectivePosts.authorize!(self, :show, @post)
+
+      set_admin_preview_flash!
 
       @page_title = @post.title
     end
@@ -115,6 +142,18 @@ module Effective
 
     def post_params
       params.require(:effective_post).permit(EffectivePosts.permitted_params)
+    end
+
+    def admin_edit_or_preview?
+      admin_edit? || admin_preview?
+    end
+
+    def admin_edit?
+      EffectivePosts.authorized?(self, :admin, :effective_posts) && (params[:edit].to_s == 'true')
+    end
+
+    def admin_preview?
+      EffectivePosts.authorized?(self, :admin, :effective_posts) && (params[:preview].to_s == 'true')
     end
 
   end

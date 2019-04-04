@@ -1,7 +1,6 @@
 .effective-post
   %h2.post-title= link_to post, effective_post_path(post)
-
-  %p.post-meta= post_meta(post, author: false)
+  %p.post-meta.text-muted= post_meta(post, author: false)
 
   - if post.category == 'events'
     %table.table.post-events
@@ -29,4 +28,9 @@
   - if block_given?
     = yield
   - else
-    .post-content.post-excerpt= post_excerpt(post)
+    .post-content.post-excerpt
+      - if EffectivePosts.use_fullscreen_editor && render_region(post.region(:body)).to_s.index(Effective::Snippets::ReadMoreDivider::TOKEN).present?
+        = post_excerpt(post, read_more_link: false)
+      - elsif post.description.present?
+        %p= post.description
+      = read_more_link(post)

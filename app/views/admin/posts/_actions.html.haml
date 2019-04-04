@@ -7,7 +7,7 @@
     - if EffectivePosts.use_fullscreen_editor
       = dropdown_link_to 'Edit Content', effective_post_path(post, edit: true), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank'
 
-    = dropdown_link_to 'View', effective_post_path(post, preview: true), target: '_blank'
+    = dropdown_link_to 'View', effective_post_path(post, preview: (true unless post.published?)), target: '_blank'
 
     = dropdown_link_to "Delete", effective_posts.admin_post_path(post),
         data: { method: :delete, confirm: "Really delete #{post}?" }

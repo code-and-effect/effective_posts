@@ -59,9 +59,11 @@ module EffectivePostsHelper
     end).html_safe
   end
 
-  def read_more_link(post, options)
+  def read_more_link(post, options = {})
+    path_params = { edit: params[:edit], preview: params[:preview] }.compact
+
     content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more'), effective_post_path(post), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
+      link_to((options.delete(:label) || 'Read more'), effective_post_path(post, path_params), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
     end
   end
   alias_method :readmore_link, :read_more_link
