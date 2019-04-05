@@ -49,6 +49,7 @@ module Effective
       end
 
       @page_title = @post.title
+      @meta_description = @post.description
     end
 
     # Public user submit a post functionality

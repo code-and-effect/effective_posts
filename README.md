@@ -49,6 +49,13 @@ Then migrate the database:
 rake db:migrate
 ```
 
+
+Add the following helper to your application layout in the `<head>..</head>` section. This works alongside effective_pages to include some publisher meta tags.
+
+```ruby
+= effective_posts_header_tags
+```
+
 There are no required javascript or stylesheet includes.
 
 
@@ -59,8 +66,6 @@ To create your first post, visit `/admin/posts` and click `New Post`.
 If you've defined more than one category in the `/app/config/initializers/effective_posts.rb` initializer, you will be asked to assign this post a category.  Otherwise the default category `posts` will be assigned.
 
 You can schedule a post to appear at a later date by setting the published_at value to a future date.
-
-If you're using the [effective_form_inputs](https://github.com/code-and-effect/effective_form_inputs) gem, the published_at input will be displayed with a nice bootstrap3 datetimepicker, otherwise it will use the default simple_form datetime input (which is pretty bad).
 
 As well, if you're using the [effective_roles](https://github.com/code-and-effect/effective_roles) gem, you will be able to configure permissions so that only permitted users may view this post.
 

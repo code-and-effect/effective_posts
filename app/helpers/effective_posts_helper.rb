@@ -1,6 +1,20 @@
 require 'cgi'
 
 module EffectivePostsHelper
+
+  def effective_posts_header_tags
+    return unless @post.present? && @post.kind_of?(Effective::Post)
+
+    @effective_pages_og_type = 'article'
+
+    tags = [
+      tag(:meta, itemprop: 'author', content: @post.user.to_s),
+      tag(:meta, itemprop: 'publisher', content: @post.user.to_s),
+      tag(:meta, itemprop: 'datePublised', content: @post.published_at.strftime('%FT%T%:z')),
+      tag(:meta, itemprop: 'headline', content: @post.title)
+    ].join("\n").html_safe
+  end
+
   def effective_post_path(post, opts = nil)
     category = post.category.to_s.downcase
     opts ||= {}
