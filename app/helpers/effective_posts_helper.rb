@@ -39,13 +39,24 @@ module EffectivePostsHelper
     ].compact.join(' ').html_safe
   end
 
+  def admin_post_status_badge(post)
+    return nil unless EffectivePosts.authorized?(self, :admin, :effective_posts)
+
+    if post.draft?
+      content_tag(:span, 'DRAFT', class: 'badge badge-info')
+    elsif post.published? == false
+      content_tag(:span, "TO BE PUBLISHED AT #{post.published_at.strftime('%F %H:%M')}", class: 'badge badge-info')
+    end
+  end
+
   # Only supported options are:
   # :label => 'Read more' to set the label of the 'Read More' link
   # :omission => '...' passed to the final text node's truncate
   # :length => 200 to set the max inner_text length of the content
   # All other options are passed to the link_to 'Read more'
-  def post_excerpt(post, read_more_link: true, label: 'Read more', omission: '...', length: 200)
+  def post_excerpt(post, read_more_link: true, label: 'Continue reading', omission: '...', length: 200)
     content = effective_region(post, :body, :editable => false) { '<p>Default content</p>'.html_safe }
+    description = content_tag(:p, post.description)
 
     divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
     read_more = (read_more_link && label.present?) ? readmore_link(post, label: label) : ''
@@ -53,17 +64,15 @@ module EffectivePostsHelper
     CGI.unescapeHTML(if divider.present?
       truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + read_more
     elsif length.present?
-      truncate_html(content, length, omission) + read_more
+      truncate_html(description, length, omission) + read_more
     else
-      content
+      description
     end).html_safe
   end
 
   def read_more_link(post, options = {})
-    path_params = { edit: params[:edit], preview: params[:preview] }.compact
-
     content_tag(:p, class: 'post-read-more') do
-      link_to((options.delete(:label) || 'Read more'), effective_post_path(post, path_params), (options.delete(:class) || {class: 'btn btn-primary'}).reverse_merge(options))
+      link_to((options.delete(:label) || 'Continue reading'), effective_post_path(post), (options.delete(:class) || {class: ''}).reverse_merge(options))
     end
   end
   alias_method :readmore_link, :read_more_link

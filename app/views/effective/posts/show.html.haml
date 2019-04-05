@@ -1,8 +1,8 @@
 = render 'layout' do
-  = render('effective/posts/post', post: @post) do
+  .effective-post
+    = render 'effective/posts/header', post: @post
+    = render 'effective/posts/event', post: @post
+
     .post-body.post-content
       = effective_region @post, :body do
         %p Default content
-
-  .border-top.mb-3
-  = link_to 'Continue', effective_posts.posts_path, class: 'btn btn-primary'

@@ -29,6 +29,7 @@ module Effective
     # timestamps
 
     validates :title, presence: true, length: { maximum: 255 }
+    validates :description, presence: true, length: { maximum: 150 }
     validates :category, presence: true
     validates :published_at, presence: true
 
@@ -39,7 +40,7 @@ module Effective
     scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
     scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
-    scope :posts, -> (user: nil, category: nil, drafts: false) {
+    scope :posts, -> (user: nil, category: nil, unpublished: false) {
       scope = all.includes(:regions).order(published_at: :desc)
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
@@ -52,7 +53,7 @@ module Effective
         scope = scope.with_category(category)
       end
 
-      if drafts.blank?
+      unless unpublished
         scope = scope.published
       end
 

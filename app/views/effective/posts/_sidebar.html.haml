@@ -1,28 +1,31 @@
 - posts = recent_posts(category: nil, limit: 5)
-%h4.sidebar-title Recent Posts
-%ul.nav.flex-column
-  - posts.each do |post|
-    = nav_link_to post, effective_post_path(post)
-
-  - if posts.length == 0
-    = nav_link_to 'None', effective_posts.posts_path, class: 'disabled'
+%h4.dashboard-title About
+%p.mb-5
+  Welcome to the Tadum blog, where you can learn how to build a culture of high-value meetings.
 
 - if EffectivePosts.categories.present?
   - categories = EffectivePosts.categories
-  %h4.sidebar-title Categories
-  %ul.nav.flex-column
-    = nav_link_to 'All Posts', effective_posts.posts_path
+  %h4.dashboard-title Categories
+  %ul.list-unstyled
+    %li= link_to 'All Posts', effective_posts.posts_path
 
-    - categories.each do |category|
-      = nav_link_to category.to_s.titleize, effective_post_category_path(category)
+    - categories.sort.each do |category|
+      %li= link_to category.to_s.titleize, effective_post_category_path(category)
 
-- if params[:category]
-  - category_posts = recent_posts(category: params[:category], limit: 5)
-  %h4.sidebar-title Recent #{params[:category].titleize}
-  %ul.nav.flex-column
-    - category_posts.each do |post|
-      = nav_link_to post, effective_post_path(post)
+- posts = recent_posts(category: nil, limit: 5)
+%h4.dashboard-title Recent Posts
+%ul.list-unstyled
+  - posts.each do |post|
+    %li= link_to post, effective_post_path(post)
 
-    - if category_posts.length == 0
-      = nav_link_to 'None', effective_posts.posts_path, class: 'disabled'
+  - if posts.length == 0
+    %li= link_to 'None', effective_posts.posts_path, class: 'disabled'
 
+- if EffectivePosts.authorized?(self, :admin, :effective_posts)
+  %h4.dashboard-title Admin
+  %ul.list-unstyled
+    %li= link_to 'All Posts', effective_posts.admin_posts_path
+
+    - if @post.present?
+      %li= link_to 'Edit Post Content', effective_regions.edit_path(effective_posts.post_path(@post, exit: effective_posts.post_path(@post)))
+      %li= link_to 'Edit Post Settings', effective_posts.edit_admin_post_path(@post)

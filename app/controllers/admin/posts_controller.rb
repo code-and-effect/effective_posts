@@ -33,7 +33,7 @@ module Admin
           flash[:success] = 'Successfully created post'
           redirect_to effective_posts.new_admin_post_path
         elsif params[:commit] == 'Save and View'
-          redirect_to effective_posts.post_path(@post, preview: (true unless @post.published?))
+          redirect_to effective_posts.post_path(@post)
         else
           flash[:success] = 'Successfully created post'
           redirect_to effective_posts.edit_admin_post_path(@post)
@@ -64,7 +64,7 @@ module Admin
           flash[:success] = 'Successfully updated post'
           redirect_to effective_posts.new_admin_post_path
         elsif params[:commit] == 'Save and View'
-          redirect_to effective_posts.post_path(@post, preview: (true unless @post.published?))
+          redirect_to effective_posts.post_path(@post)
         elsif params[:commit] == 'Save and Duplicate'
           begin
             post = @post.duplicate!

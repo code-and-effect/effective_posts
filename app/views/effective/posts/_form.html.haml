@@ -10,12 +10,9 @@
 
   = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
 
-  = f.text_area :body
+  = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
-  / = f.input :body,
-  /   as: (defined?(EffectiveFormInputs) ? :effective_ckeditor_text_area : :text),
-  /   hint: 'The body of your post. You can add content here, or with the full screen editor on the next page.',
-  /   toolbar: 'simple',
-  /   required: true
+  - unless EffectivePosts.use_fullscreen_editor
+    = f.ck_editor :body
 
   = f.submit 'Save'
