@@ -1,6 +1,11 @@
 = render 'layout' do
   .effective-post
-    = render 'effective/posts/header', post: @post
+    %h1.post-title= link_to @post, effective_post_path(@post)
+
+    %p.post-meta.text-muted
+      = post_meta(@post, author: false)
+      = admin_post_status_badge(@post)
+
     = render 'effective/posts/event', post: @post
 
     .post-body.post-content
