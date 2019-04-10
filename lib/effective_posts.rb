@@ -17,6 +17,7 @@ module EffectivePosts
 
   mattr_accessor :categories
   mattr_accessor :use_category_routes
+  mattr_accessor :use_blog_routes
 
   mattr_accessor :use_effective_roles
   mattr_accessor :use_fullscreen_editor

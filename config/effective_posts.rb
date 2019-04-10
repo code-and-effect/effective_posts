@@ -14,6 +14,13 @@ EffectivePosts.setup do |config|
   # Regardless of this setting, posts will always be available via /posts?category=events
   config.use_category_routes = true
 
+  # Create routes for a blog. 
+  # Includes category routes, but they're different.
+  # /blog is posts#index
+  # /blog/category/announcements is posts#index?category=announcements
+  # /blog/1-post-title is posts#show
+  # config.use_blog_routes = true
+
   # Number of posts displayed per page (Kaminari)
   config.per_page = 10
 

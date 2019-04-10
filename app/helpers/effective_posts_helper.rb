@@ -19,7 +19,9 @@ module EffectivePostsHelper
     category = post.category.to_s.downcase
     opts ||= {}
 
-    if EffectivePosts.use_category_routes
+    if EffectivePosts.use_blog_routes
+      effective_posts.post_path(post, opts)
+    elsif EffectivePosts.use_category_routes
       effective_posts.post_path(post, opts).sub('/posts', "/#{category}")
     else
       effective_posts.post_path(post, opts.merge(category: category))
@@ -32,11 +34,18 @@ module EffectivePostsHelper
     category = category.to_s.downcase
     opts ||= {}
 
-    if EffectivePosts.use_category_routes
+    if EffectivePosts.use_blog_routes
+      "/blog/category/#{category}"
+    elsif EffectivePosts.use_category_routes
       "/#{category}"
     else
       effective_posts.posts_path(opts.merge(category: category))
     end
+  end
+
+  def link_to_post_category(category, options = {})
+    category = category.to_s.downcase
+    link_to(category.to_s.titleize, effective_post_category_path(category), title: category.to_s.titleize)
   end
 
   def render_post(post)
@@ -101,12 +110,7 @@ module EffectivePostsHelper
     render(partial: '/effective/posts/categories', locals: { categories: (reverse ? post_categories.reverse : post_categories) })
   end
 
-  def link_to_post_category(category, options = {})
-    category = category.to_s.downcase
 
-    href = EffectivePosts.use_category_routes ? "/#{category}" : effective_posts.posts_path(category: category.to_s)
-    link_to(category.to_s.titleize, href, options)
-  end
 
   ### Recent Posts
 
