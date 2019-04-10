@@ -15,11 +15,11 @@ EffectivePosts.setup do |config|
   config.use_category_routes = true
 
   # Create routes for a blog. 
-  # Includes category routes, but they're different.
+  # Includes category routes, but they're not top level.
   # /blog is posts#index
   # /blog/category/announcements is posts#index?category=announcements
   # /blog/1-post-title is posts#show
-  # config.use_blog_routes = true
+  config.use_blog_routes = false
 
   # Number of posts displayed per page (Kaminari)
   config.per_page = 10
