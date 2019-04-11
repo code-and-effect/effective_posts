@@ -25,7 +25,7 @@ module Effective
 
       EffectivePosts.authorize!(self, :index, Effective::Post)
 
-      @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize
+      @page_title ||= (params[:category].present? ? params[:category] : 'Blog').titleize
     end
 
     def show
@@ -48,8 +48,8 @@ module Effective
         ].compact.join(' ')
       end
 
-      @page_title = @post.title
-      @meta_description = @post.description
+      @page_title ||= @post.title
+      @meta_description ||= @post.description
     end
 
     # Public user submit a post functionality
