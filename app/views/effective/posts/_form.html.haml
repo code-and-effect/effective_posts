@@ -6,6 +6,9 @@
   - else
     = f.hidden_field :category, (EffectivePosts.categories.first || 'posts')
 
+  = f.ck_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+  = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
+
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
   = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
@@ -13,6 +16,6 @@
   = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
   - unless EffectivePosts.use_fullscreen_editor
-    = f.ck_editor :body
+    = f.ck_editor :body, hint: 'The content of your post.'
 
   = f.submit 'Save'

@@ -56,7 +56,7 @@ module EffectivePosts
 
   def self.permitted_params
     @@permitted_params ||= [
-      :title, :description, :draft, :category, :published_at, :body, :tags, :extra,
+      :title, :excerpt, :description, :draft, :category, :published_at, :body, :tags, :extra,
       :start_at, :end_at, :location, :website_name, :website_href, roles: []
     ].compact
   end

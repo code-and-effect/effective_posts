@@ -77,20 +77,24 @@ module EffectivePostsHelper
   # :omission => '...' passed to the final text node's truncate
   # :length => 200 to set the max inner_text length of the content
   # All other options are passed to the link_to 'Read more'
-  def post_excerpt(post, read_more_link: true, label: 'Continue reading', omission: '...', length: 200)
-    content = effective_region(post, :body, :editable => false) { '<p>Default content</p>'.html_safe }
-    description = content_tag(:p, post.description)
-
+  def post_excerpt(post, read_more_link: true, label: 'Continue reading', omission: '...', length: nil)
+    content = effective_region(post, :body, editable: false) { '<p>Default content</p>'.html_safe }
     divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
+    excerpt = post.excerpt.to_s
+
     read_more = (read_more_link && label.present?) ? readmore_link(post, label: label) : ''
 
-    CGI.unescapeHTML(if divider.present?
-      truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '') + read_more
-    elsif length.present?
-      truncate_html(description, length, omission) + read_more
-    else
-      description
-    end).html_safe
+    html = (
+      if divider.present?
+        truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '')
+      elsif length.present?
+        truncate_html(excerpt, length, omission)
+      else
+        excerpt
+      end
+    ).html_safe
+
+    (html + read_more).html_safe
   end
 
   def read_more_link(post, options = {})
@@ -109,8 +113,6 @@ module EffectivePostsHelper
   def render_post_categories(reverse: false)
     render(partial: '/effective/posts/categories', locals: { categories: (reverse ? post_categories.reverse : post_categories) })
   end
-
-
 
   ### Recent Posts
 
