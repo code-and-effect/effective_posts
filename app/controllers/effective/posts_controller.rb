@@ -25,7 +25,7 @@ module Effective
 
       EffectivePosts.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= (params[:category].present? ? params[:category] : 'Blog').titleize
+      @page_title ||= (params[:category].presence || 'Blog').titleize
     end
 
     def show

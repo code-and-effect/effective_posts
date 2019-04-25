@@ -1,7 +1,4 @@
 - posts = recent_posts(category: nil, limit: 5)
-%h4.dashboard-title About
-%p.mb-5
-  Welcome to the Tadum blog, where you can learn how to build a culture of high-value meetings.
 
 - if EffectivePosts.categories.present?
   - categories = EffectivePosts.categories
@@ -13,7 +10,7 @@
       %li= link_to category.to_s.titleize, effective_post_category_path(category)
 
 - posts = recent_posts(category: nil, limit: 5)
-%h4.dashboard-title Recent Posts
+%h4.dashboard-title Recent
 %ul.list-unstyled
   - posts.each do |post|
     %li= link_to post, effective_post_path(post)
