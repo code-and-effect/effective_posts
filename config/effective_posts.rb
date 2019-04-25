@@ -19,7 +19,7 @@ EffectivePosts.setup do |config|
   # /blog is posts#index
   # /blog/category/announcements is posts#index?category=announcements
   # /blog/1-post-title is posts#show
-  config.use_blog_routes = false
+  config.use_blog_routes = true
 
   # Number of posts displayed per page (Kaminari)
   config.per_page = 10
