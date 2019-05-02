@@ -19,11 +19,15 @@
     = f.ck_editor :body, hint: 'The content of your post.'
 
   - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
-    = f.checks :roles, EffectiveRoles.roles_collection(f.object), hint: '* leave blank for a regular public post that anyone can view'
+    = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
 
   = f.submit do
     = f.save 'Save'
+
     - if EffectivePosts.use_fullscreen_editor
-      = f.save 'Save and Edit Content'
-    = f.save 'Save and View'
-    = f.save 'Save and Duplicate'
+      = f.save 'Save and Edit Content', class: 'btn btn-secondary'
+
+    = f.save 'Save and View', class: 'btn btn-secondary'
+
+    - if f.object.persisted?
+      = f.save 'Duplicate', class: 'btn btn-info'

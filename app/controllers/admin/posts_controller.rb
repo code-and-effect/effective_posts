@@ -65,7 +65,7 @@ module Admin
           redirect_to effective_posts.new_admin_post_path
         elsif params[:commit] == 'Save and View'
           redirect_to effective_posts.post_path(@post)
-        elsif params[:commit] == 'Save and Duplicate'
+        elsif params[:commit] == 'Duplicate'
           begin
             post = @post.duplicate!
             flash[:success] = 'Successfully saved and duplicated post.'
