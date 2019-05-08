@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', ['>= 3.2.0']
   s.add_dependency 'sass'
-  s.add_dependency 'kaminari'
   s.add_dependency 'nokogiri'
   s.add_dependency 'effective_bootstrap'
   s.add_dependency 'effective_ckeditor'

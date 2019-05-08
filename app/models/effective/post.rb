@@ -40,6 +40,13 @@ module Effective
     scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
     scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
+    scope :paginate, -> (page: nil, per_page: EffectivePosts.per_page) {
+      page = (page || 1).to_i
+      offset = [(page - 1), 0].max * per_page
+
+      limit(per_page).offset(offset)
+    }
+
     scope :posts, -> (user: nil, category: nil, unpublished: false) {
       scope = all.includes(:regions).order(published_at: :desc)
 

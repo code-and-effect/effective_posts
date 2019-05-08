@@ -2,11 +2,6 @@
 
 A blog implementation with WYSIWYG content editing, post scheduling, pagination and optional top level routes for each post category.
 
-Built ontop of effective_regions for post content entry and Kaminari for pagination.
-
-Rails 3.2.x and 4.x
-
-
 ## effective_posts 1.0
 
 This is the 1.0 series of effective_posts.
@@ -88,12 +83,9 @@ Use `post_excerpt(post)` to display the excerpt for a post.  Or `post_excerpt(po
 
 ## Pagination
 
-The [kaminari](https://github.com/amatsuda/kaminari) gem is used for pagination on all posts#index type screens.
+The [effective_bootstrap](https://github.com/code-and-effect/effective_bootstrap) gem is used for pagination on all posts#index type screens.
 
 The per_page for posts may be configured via the `/app/config/initializers/effective_posts.rb` initializer.
-
-Included within this gem is the bootstrap3 theme for kaminari, but, as with any gem, your app-specific kaminari views will take priority over these included views.
-
 
 
 ## Authorization

@@ -1,9 +1,8 @@
 %h1= @page_title
 
 = render 'layout' do
-  %nav= paginate @posts
-
   .effective-posts
     = render partial: @posts, spacer_template: 'spacer'
 
-  %nav= paginate @posts
+  %nav.d-flex.justify-content-center
+    = paginate(@posts, per_page: EffectivePosts.per_page)

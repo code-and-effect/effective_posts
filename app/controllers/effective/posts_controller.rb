@@ -12,7 +12,7 @@ module Effective
         unpublished: EffectivePosts.authorized?(self, :admin, :effective_posts)
       )
 
-      @posts = @posts.page(params[:page]).per(EffectivePosts.per_page)
+      @posts = @posts.paginate(page: params[:page])
 
       if params[:category] == 'events'
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)

@@ -21,7 +21,7 @@ EffectivePosts.setup do |config|
   # /blog/1-post-title is posts#show
   config.use_blog_routes = true
 
-  # Number of posts displayed per page (Kaminari)
+  # Number of posts displayed per page
   config.per_page = 10
 
   # Post Meta behaviour
