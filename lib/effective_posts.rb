@@ -1,4 +1,3 @@
-require 'kaminari'
 require 'nokogiri'
 require 'effective_datatables'
 require 'effective_regions'
