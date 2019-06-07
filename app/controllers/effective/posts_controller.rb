@@ -7,8 +7,8 @@ module Effective
 
     def index
       @posts ||= Effective::Post.posts(
-        user: current_user, 
-        category: params[:category], 
+        user: current_user,
+        category: params[:category],
         unpublished: EffectivePosts.authorized?(self, :admin, :effective_posts)
       )
 
@@ -25,12 +25,20 @@ module Effective
 
       EffectivePosts.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= (params[:category].presence || 'Blog').titleize
+      if params[:page]
+        @page_title ||= ((params[:category].presence || 'Blog').titleize + " - Page #{params[:page].to_s}")
+        @canonical_url ||= effective_posts.posts_url(page: params[:page])
+      else
+        @page_title ||= (params[:category].presence || 'Blog').titleize
+        @canonical_url ||= effective_posts.posts_url
+      end
+
     end
 
     def show
       @posts ||= Effective::Post.posts(user: current_user, category: params[:category], unpublished: EffectivePosts.authorized?(self, :admin, :effective_posts))
       @post = @posts.find(params[:id])
+
 
       if @post.respond_to?(:roles_permit?)
         raise Effective::AccessDenied.new('Access Denied', :show, @post) unless @post.roles_permit?(current_user)
@@ -50,6 +58,7 @@ module Effective
 
       @page_title ||= @post.title
       @meta_description ||= @post.description
+      @canonical_url ||= effective_posts.post_url(@post)
     end
 
     # Public user submit a post functionality
