@@ -9,6 +9,7 @@ class CreateEffectivePosts < ActiveRecord::Migration[4.2]
       t.string :description
       
       t.string :category
+      t.string :slug
 
       t.boolean :draft, :default => false
       t.datetime :published_at

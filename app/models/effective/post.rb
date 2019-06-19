@@ -11,6 +11,8 @@ module Effective
     # title             :string
     # description       :string
 
+    # slug              :string
+
     # category          :string
 
     # draft             :boolean
