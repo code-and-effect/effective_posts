@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Effective
   class Post < ActiveRecord::Base
     acts_as_role_restricted if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
