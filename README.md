@@ -148,7 +148,7 @@ can [:index, :show], Effective::Post
 
 if user.admin?
   can :manage, Effective::Post
-  can :admin, :effective_pages
+  can :admin, :effective_posts
 end
 ```
 
