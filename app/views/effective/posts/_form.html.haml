@@ -1,5 +1,8 @@
 = effective_form_with(model: post, url: post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path) do |f|
   = f.text_field :title, hint: 'The title of your post.'
+- if f.object.persisted? || f.object.errors.include?(:slug)
+  - current_url = effective_pages.post_url(f.object)
+  = f.text_field :slug, hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url }".html_safe
 
   - if Array(EffectivePosts.categories).length > 1
     = f.select :category, EffectivePosts.categories
