@@ -71,7 +71,7 @@ module Effective
     }
 
     def to_param
-      slug || "#{id}-#{title.parameterize}"
+      slug.presence || "#{id}-#{title.parameterize}"
     end
 
     def to_s
