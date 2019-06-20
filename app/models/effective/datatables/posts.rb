@@ -9,6 +9,7 @@ if Gem::Version.new(EffectiveDatatables::VERSION) < Gem::Version.new('3.0')
           table_column :id, visible: false
 
           table_column :title
+          table_column :slug
           table_column :category, filter: { type: :select, values: EffectivePosts.categories }
 
           if EffectivePosts.submissions_enabled
