@@ -111,6 +111,7 @@ module Effective
     def duplicate!
       Post.new(attributes.except('id', 'updated_at', 'created_at')).tap do |post|
         post.title = post.title + ' (Copy)'
+        post.slug = post.slug + '-copy'
         post.draft = true
 
         regions.each do |region|
