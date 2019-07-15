@@ -5,4 +5,4 @@
     = render partial: @posts, spacer_template: 'spacer'
 
   %nav.d-flex.justify-content-center
-    = paginate(@posts, per_page: EffectivePosts.per_page)
+    = bootstrap_paginate(@posts, per_page: EffectivePosts.per_page)
