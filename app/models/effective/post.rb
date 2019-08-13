@@ -1,8 +1,15 @@
 module Effective
   class Post < ActiveRecord::Base
-    acts_as_role_restricted if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
     acts_as_regionable
     acts_as_slugged
+
+    if EffectivePosts.use_effective_roles && respond_to?(:acts_as_role_restricted)
+      acts_as_role_restricted
+    end
+
+    if EffectivePosts.use_active_storage && respond_to?(:has_one_attached)
+      has_one_attached :image
+    end
 
     self.table_name = EffectivePosts.posts_table_name.to_s
 
