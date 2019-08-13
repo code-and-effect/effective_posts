@@ -14,7 +14,7 @@ EffectivePosts.setup do |config|
   # Regardless of this setting, posts will always be available via /posts?category=events
   config.use_category_routes = true
 
-  # Create routes for a blog. 
+  # Create routes for a blog.
   # Includes category routes, but they're not top level.
   # /blog is posts#index
   # /blog/category/announcements is posts#index?category=announcements
@@ -68,6 +68,9 @@ EffectivePosts.setup do |config|
 
   # Hides the Save and Edit Content links from admin. They can just use the textarea input.
   config.use_fullscreen_editor = true
+
+  # Display a file upload field when the admin creates a new post to collect a post.image
+  config.use_active_storage = true
 
   # Submissions
   # Allow users to submit posts (optionally for approval) to display on the website

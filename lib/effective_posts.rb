@@ -20,6 +20,7 @@ module EffectivePosts
 
   mattr_accessor :use_effective_roles
   mattr_accessor :use_fullscreen_editor
+  mattr_accessor :use_active_storage
 
   mattr_accessor :per_page
   mattr_accessor :post_meta_author
@@ -54,9 +55,9 @@ module EffectivePosts
   end
 
   def self.permitted_params
-    @@permitted_params ||= [
+   [
       :title, :excerpt, :description, :draft, :category, :slug, :published_at, :body, :tags, :extra,
-      :start_at, :end_at, :location, :website_name, :website_href, roles: []
+      :image, :start_at, :end_at, :location, :website_name, :website_href, roles: []
     ].compact
   end
 

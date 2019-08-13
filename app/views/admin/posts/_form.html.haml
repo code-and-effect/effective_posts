@@ -10,6 +10,9 @@
   - else
     = f.hidden_field :category, (EffectivePosts.categories.first || 'posts')
 
+  - if EffectivePosts.use_active_storage
+    = f.file_field :image, hint: 'An image for your post'
+
   = f.ck_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
   = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
 
@@ -22,7 +25,7 @@
   - unless EffectivePosts.use_fullscreen_editor
     = f.ck_editor :body, hint: 'The content of your post.'
 
-  - if defined?(EffectiveRoles) and f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
+  - if defined?(EffectiveRoles) && f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
     = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
 
   = f.submit do
