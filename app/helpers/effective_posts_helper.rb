@@ -29,18 +29,23 @@ module EffectivePostsHelper
   end
 
   def effective_post_category_path(category, opts = nil)
-    return effective_posts.posts_path unless category.present?
+    return effective_posts.posts_path(opts || {}) unless category.present?
 
     category = category.to_s.downcase
-    opts ||= {}
+    opts = (opts || {}).compact
+    query = ('?' + opts.to_query) if opts.present?
 
     if EffectivePosts.use_blog_routes
-      "/blog/category/#{category}"
+      "/blog/category/#{category}#{query}"
     elsif EffectivePosts.use_category_routes
-      "/#{category}"
+      "/#{category}#{query}"
     else
-      effective_posts.posts_path(opts.merge(category: category))
+      effective_posts.posts_path(opts.merge(category: category.presence).compact)
     end
+  end
+
+  def effective_post_category_url(category, opts = nil)
+    root_url.to_s.chomp('/') + effective_post_category_path(category, opts)
   end
 
   def link_to_post_category(category, options = {})
