@@ -44,7 +44,7 @@ module Effective
           'Hi Admin!',
           ('You are viewing a hidden post.' unless @post.published?),
           'Click here to',
-          ("<a href='#{effective_regions.edit_path(effective_posts.post_path(@post, exit: effective_posts.post_path(@post)))}' class='alert-link'>edit post content</a> or" unless admin_edit?),
+          ("<a href='#{effective_regions.edit_path(effective_posts.post_path(@post, exit: effective_posts.post_path(@post)))}' class='alert-link' data-no-turbolink='true' data-turbolinks='false'>edit post content</a> or" unless admin_edit?),
           ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>edit post settings</a>.")
         ].compact.join(' ')
       end

@@ -5,7 +5,7 @@
 
     = dropdown_link_to 'Edit', effective_posts.edit_admin_post_path(post)
     - if EffectivePosts.use_fullscreen_editor
-      = dropdown_link_to 'Edit Content', effective_post_path(post, edit: true), title: 'Edit Content', 'data-no-turbolink': true, target: '_blank'
+      = dropdown_link_to 'Edit Content', effective_post_path(post, edit: true), title: 'Edit Content', 'data-no-turbolink': true, 'data-turbolinks': false, target: '_blank'
 
     = dropdown_link_to 'View', effective_post_path(post), target: '_blank'
 
