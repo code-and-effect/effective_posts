@@ -13,7 +13,7 @@ module Effective
 
     self.table_name = EffectivePosts.posts_table_name.to_s
 
-    belongs_to :user
+    belongs_to :user, optional: true
 
     # Attributes
     # title             :string
