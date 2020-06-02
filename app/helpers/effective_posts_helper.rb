@@ -8,7 +8,7 @@ module EffectivePostsHelper
     if EffectivePosts.use_category_routes
       effective_posts.post_path(post, opts).sub('/posts', "/#{category}")
     else
-      effective_posts.post_path(post, opts.merge(category: category))
+      effective_posts.post_path(post, opts)
     end
   end
 

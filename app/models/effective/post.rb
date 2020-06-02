@@ -33,7 +33,6 @@ module Effective
 
     scope :drafts, -> { where(draft: true) }
     scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
-    scope :with_category, -> (category) { where(category: category.to_s.downcase) }
 
     scope :posts, -> (user: nil, category: nil, drafts: false) {
       scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
@@ -48,7 +47,7 @@ module Effective
       end
 
       if category.present?
-        scope = scope.with_category(category)
+        scope = scope.where(category: category)
       end
 
       if drafts.blank?
