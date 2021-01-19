@@ -31,14 +31,15 @@ module EffectivePostsHelper
   def effective_post_category_path(category, opts = nil)
     return effective_posts.posts_path(opts || {}) unless category.present?
 
-    category = category.to_s.downcase
+    category = category.to_s
+    category_path = category.to_s.downcase.parameterize
     opts = (opts || {}).compact
     query = ('?' + opts.to_query) if opts.present?
 
     if EffectivePosts.use_blog_routes
-      "/blog/category/#{category}#{query}"
+      "/blog/category/#{category_path}#{query}"
     elsif EffectivePosts.use_category_routes
-      "/#{category}#{query}"
+      "/#{category_path}#{query}"
     else
       effective_posts.posts_path(opts.merge(category: category.presence).compact)
     end
