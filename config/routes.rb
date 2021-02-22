@@ -1,15 +1,15 @@
 EffectivePosts::Engine.routes.draw do
   namespace :admin do
-    resources :posts, except: [:show]
-
-    if EffectivePosts.submissions_enabled && EffectivePosts.submissions_require_approval
-      match 'posts/:id/approve', to: 'posts#approve', via: :get, as: :approve_post
+    resources :posts, except: [:show] do
+      if EffectivePosts.submissions_enabled && EffectivePosts.submissions_require_approval
+        post :approve, on: :member
+      end
     end
 
     match 'posts/excerpts', to: 'posts#excerpts', via: :get
   end
 
-  scope :module => 'effective' do
+  scope module: 'effective' do
     categories = Array(EffectivePosts.categories).map { |cat| cat.to_s unless cat == 'posts'}.compact
     onlies = ([:index, :show] unless EffectivePosts.submissions_enabled)
 
@@ -33,9 +33,6 @@ EffectivePosts::Engine.routes.draw do
 
 end
 
-# Automatically mount the engine as an append
-Rails.application.routes.append do
-  unless Rails.application.routes.routes.find { |r| r.name == 'effective_posts' }
-    mount EffectivePosts::Engine => '/', :as => 'effective_posts'
-  end
+Rails.application.routes.draw do
+  mount EffectivePosts::Engine => '/', :as => 'effective_posts'
 end

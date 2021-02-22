@@ -1,54 +1,62 @@
 module Effective
   class Post < ActiveRecord::Base
-    acts_as_regionable
+    attr_accessor :current_user
+
     acts_as_slugged
 
-    if EffectivePosts.use_effective_roles && respond_to?(:acts_as_role_restricted)
-      acts_as_role_restricted
-    end
+    log_changes if respond_to?(:log_changes)
+    acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
 
-    if EffectivePosts.use_active_storage && respond_to?(:has_one_attached)
-      has_one_attached :image
-    end
+    has_one_attached :image
+
+    has_rich_text :excerpt
+    has_rich_text :body
 
     self.table_name = EffectivePosts.posts_table_name.to_s
 
-    belongs_to :user, optional: true
+    belongs_to :user, polymorphic: true, optional: true
 
-    # Attributes
-    # title             :string
-    # description       :string
+    effective_resource do
+      title             :string
+      description       :string
 
-    # slug              :string
+      category          :string
+      slug              :string
 
-    # category          :string
+      draft             :boolean
+      published_at      :datetime
+      tags              :text
 
-    # draft             :boolean
-    # published_at      :datetime
-    # tags              :text
+      roles_mask        :integer
 
-    # roles_mask        :integer
+      # Event Fields
+      start_at          :datetime
+      end_at            :datetime
 
-    # Event Fields
-    # start_at          :datetime
-    # end_at            :datetime
-    # location          :string
-    # website_name      :website_name
-    # website_href      :website_href
+      location          :string
+      website_name      :string
+      website_href      :string
 
-    # timestamps
+      timestamps
+    end
+
+    before_validation(if: -> { current_user.present? }) do
+      self.user ||= current_user
+    end
 
     validates :title, presence: true, length: { maximum: 255 }
     validates :description, presence: true, length: { maximum: 150 }
     validates :category, presence: true
     validates :published_at, presence: true
 
-    validates :start_at, presence: true, if: -> { category == 'events'}
+    validates :start_at, presence: true, if: -> { category == 'events' }
 
     scope :drafts, -> { where(draft: true) }
     scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
     scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
     scope :with_category, -> (category) { where(category: category.to_s.downcase) }
+
+    scope :deep, -> { with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds }
 
     scope :paginate, -> (page: nil, per_page: EffectivePosts.per_page) {
       page = (page || 1).to_i
@@ -58,7 +66,7 @@ module Effective
     }
 
     scope :posts, -> (user: nil, category: nil, unpublished: false) {
-      scope = all.includes(:regions).order(published_at: :desc)
+      scope = all.deep.order(published_at: :desc)
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
         if user.present? && user.respond_to?(:roles)
@@ -77,16 +85,12 @@ module Effective
       scope
     }
 
-    def to_param
-      slug.presence || "#{id}-#{title.parameterize}"
-    end
-
     def to_s
       title.presence || 'New Post'
     end
 
     def published?
-      !draft? && published_at < Time.zone.now
+      !draft? && published_at.present? && published_at < Time.zone.now
     end
 
     def approved?
@@ -97,25 +101,18 @@ module Effective
       category == 'events'
     end
 
-    def body
-      region(:body).content
-    end
-
-    def body=(input)
-      region(:body).content = input
-    end
-
     # 3.333 words/second is the default reading speed.
     def time_to_read_in_seconds(reading_speed = 3.333)
       (regions.to_a.sum { |region| (region.content || '').scan(/\w+/).size } / reading_speed).seconds
     end
 
     def send_post_submitted_to_admin!
-      send_email(:post_submitted_to_admin, to_param)
+      deliver_method = EffectivePosts.mailer[:deliver_method] || raise('expected an EffectivePosts.deliver_method')
+      Effective::PostsMailer.post_submitted_to_admin(to_param).send(deliver_method)
     end
 
     # Returns a duplicated post object, or throws an exception
-    def duplicate!
+    def duplicate
       Post.new(attributes.except('id', 'updated_at', 'created_at')).tap do |post|
         post.title = post.title + ' (Copy)'
         post.slug = post.slug + '-copy'
@@ -124,26 +121,15 @@ module Effective
         regions.each do |region|
           post.regions.build(region.attributes.except('id', 'updated_at', 'created_at'))
         end
-
-        post.save!
       end
     end
 
-    private
+    def duplicate!
+      duplicate.tap { |post| post.save! }
+    end
 
-    def send_email(email, *mailer_args)
-      begin
-        if EffectivePosts.mailer[:delayed_job_deliver] && EffectivePosts.mailer[:deliver_method] == :deliver_later
-          Effective::PostsMailer.delay.public_send(email, *mailer_args)
-        elsif EffectivePosts.mailer[:deliver_method].present?
-          Effective::PostsMailer.public_send(email, *mailer_args).public_send(EffectivePosts.mailer[:deliver_method])
-        else
-          Effective::PostsMailer.public_send(email, *mailer_args).deliver_now
-        end
-      rescue => e
-        raise e unless Rails.env.production?
-        return false
-      end
+    def approve!
+      update!(draft: false)
     end
 
   end

@@ -1,64 +1,29 @@
-require 'nokogiri'
 require 'effective_datatables'
-require 'effective_regions'
+require 'effective_resources'
 require 'effective_posts/engine'
 require 'effective_posts/version'
 
 module EffectivePosts
-  mattr_accessor :posts_table_name
 
-  mattr_accessor :authorization_method
-  mattr_accessor :permitted_params
-
-  mattr_accessor :layout
-  mattr_accessor :simple_form_options
-  mattr_accessor :admin_simple_form_options
-
-  mattr_accessor :categories
-  mattr_accessor :use_category_routes
-  mattr_accessor :use_blog_routes
-
-  mattr_accessor :use_effective_roles
-  mattr_accessor :use_fullscreen_editor
-  mattr_accessor :use_active_storage
-
-  mattr_accessor :per_page
-  mattr_accessor :post_meta_author
-
-  mattr_accessor :submissions_enabled
-  mattr_accessor :submissions_require_current_user
-  mattr_accessor :submissions_require_approval
-  mattr_accessor :submissions_note
-
-  # These are hashes of configs
-  mattr_accessor :mailer
-
-  def self.setup
-    yield self
+  def self.config_keys
+    [
+      :posts_table_name, :layout, :categories,
+      :use_category_routes, :use_blog_routes,
+      :use_effective_roles, :use_fullscreen_editor, :use_active_storage,
+      :per_page, :post_meta_author,
+      :submissions_enabled, :submissions_require_current_user,
+      :submissions_require_approval, :submissions_note,
+      :mailer
+    ]
   end
 
-  def self.authorized?(controller, action, resource)
-    @_exceptions ||= [Effective::AccessDenied, (CanCan::AccessDenied if defined?(CanCan)), (Pundit::NotAuthorizedError if defined?(Pundit))].compact
-
-    return !!authorization_method unless authorization_method.respond_to?(:call)
-    controller = controller.controller if controller.respond_to?(:controller)
-
-    begin
-      !!(controller || self).instance_exec((controller || self), action, resource, &authorization_method)
-    rescue *@_exceptions
-      false
-    end
-  end
-
-  def self.authorize!(controller, action, resource)
-    raise Effective::AccessDenied.new('Access Denied', action, resource) unless authorized?(controller, action, resource)
-  end
+  include EffectiveGem
 
   def self.permitted_params
-   [
+    [
       :title, :excerpt, :description, :draft, :category, :slug, :published_at, :body, :tags, :extra,
       :image, :start_at, :end_at, :location, :website_name, :website_href, roles: []
-    ].compact
+    ]
   end
 
 end

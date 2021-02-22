@@ -10,7 +10,8 @@ module Effective
       mail(
         to: EffectivePosts.mailer[:admin_email],
         from: EffectivePosts.mailer[:default_from],
-        subject: subject_for_post_submitted_to_admin(@post)
+        subject: subject_for_post_submitted_to_admin(@post),
+        tenant: (Tenant.current if defined?(Tenant))
       )
     end
 

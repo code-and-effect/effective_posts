@@ -2,17 +2,17 @@
 
 A blog implementation with WYSIWYG content editing, post scheduling, pagination and optional top level routes for each post category.
 
-## effective_posts 1.0
+## effective_posts 2.0
 
-This is the 1.0 series of effective_posts.
+This is the 2.0 series of effective_posts.
 
-This requires Twitter Bootstrap 4 and Rails 5.1+
+This requires Twitter Bootstrap 4 and Rails 6+
 
 Please check out [Effective Posts 0.x](https://github.com/code-and-effect/effective_posts/tree/bootstrap3) for more information using this gem with Bootstrap 3.
 
 ## Getting Started
 
-Please first install the [effective_regions](https://github.com/code-and-effect/effective_regions) and [effective_datatables](https://github.com/code-and-effect/effective_datatables) gems.
+Please first install the [effective_datatables](https://github.com/code-and-effect/effective_datatables) gem.
 
 Please download and install [Twitter Bootstrap4](http://getbootstrap.com)
 
@@ -64,8 +64,6 @@ You can schedule a post to appear at a later date by setting the published_at va
 
 As well, if you're using the [effective_roles](https://github.com/code-and-effect/effective_roles) gem, you will be able to configure permissions so that only permitted users may view this post.
 
-Once you click `Save and Edit Content` you will be brought into the effective_regions editor where you may enter the content for your post.  Click `Insert Snippet` -> `Read more divider` from the toolbar to place a divider into your post.  Only the content above the Read more divider, the excerpt content, will be displayed on any posts#index screens.  The full content will be displayed on the posts#show screen.
-
 
 ## Category Routes
 
@@ -77,9 +75,6 @@ If disabled, all posts will be available at `/posts`, with posts for a specific 
 ## Helpers
 
 Use `link_to_post_category(:blog)` to display a link to the Blog page.  The helper considers `config.use_category_routes` and puts in the correct url.
-
-Use `post_excerpt(post)` to display the excerpt for a post.  Or `post_excerpt(post, :length => 200)` to truncate it and add a Read more link where appropriate.
-
 
 ## Pagination
 

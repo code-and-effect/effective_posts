@@ -3,7 +3,7 @@ require 'cgi'
 module EffectivePostsHelper
 
   def effective_posts_header_tags
-    return unless @post.present? && @post.kind_of?(Effective::Post)
+    return unless @post && @post.kind_of?(Effective::Post) && @post.persisted?
 
     @effective_pages_og_type = 'article'
 
@@ -69,7 +69,7 @@ module EffectivePostsHelper
   end
 
   def admin_post_status_badge(post)
-    return nil unless EffectivePosts.authorized?(self, :admin, :effective_posts)
+    return nil unless EffectiveResources.authorized?(self, :admin, :effective_posts)
 
     if post.draft?
       content_tag(:span, 'DRAFT', class: 'badge badge-info')
@@ -78,29 +78,9 @@ module EffectivePostsHelper
     end
   end
 
-  # Only supported options are:
-  # :label => 'Read more' to set the label of the 'Read More' link
-  # :omission => '...' passed to the final text node's truncate
-  # :length => 200 to set the max inner_text length of the content
   # All other options are passed to the link_to 'Read more'
-  def post_excerpt(post, read_more_link: true, label: 'Continue reading', omission: '...', length: nil)
-    content = effective_region(post, :body, editable: false) { '<p>Default content</p>'.html_safe }
-    divider = content.index(Effective::Snippets::ReadMoreDivider::TOKEN)
-    excerpt = post.excerpt.to_s
-
-    read_more = (read_more_link && label.present?) ? readmore_link(post, label: label) : ''
-
-    html = (
-      if divider.present?
-        truncate_html(content, Effective::Snippets::ReadMoreDivider::TOKEN, '')
-      elsif length.present?
-        truncate_html(excerpt, length, omission)
-      else
-        excerpt
-      end
-    ).html_safe
-
-    (html + read_more).html_safe
+  def post_excerpt(post, label: 'Continue reading')
+    (post.excerpt.to_s + readmore_link(post, label: label)).html_safe
   end
 
   def read_more_link(post, options = {})

@@ -29,39 +29,8 @@ EffectivePosts.setup do |config|
   # The author is the user that created the Effective::Post object
   config.post_meta_author = true
 
-  # Authorization Method
-  #
-  # This method is called by all controller actions with the appropriate action and resource
-  # If the method returns false, an Effective::AccessDenied Error will be raised (see README.md for complete info)
-  #
-  # Use via Proc (and with CanCan):
-  # config.authorization_method = Proc.new { |controller, action, resource| can?(action, resource) }
-  #
-  # Use via custom method:
-  # config.authorization_method = :my_authorization_method
-  #
-  # And then in your application_controller.rb:
-  #
-  # def my_authorization_method(action, resource)
-  #   current_user.is?(:admin)
-  # end
-  #
-  # Or disable the check completely:
-  # config.authorization_method = false
-  config.authorization_method = Proc.new do |controller, action, resource|
-    authorize!(action, resource)
-    resource.respond_to?(:roles_permit?) ? resource.roles_permit?(current_user) : true
-  end
-
   # Layout Settings
-  # Configure the Layout per controller, or all at once
-  config.layout = {
-    posts: 'application',
-    admin: 'admin'
-  }
-
-  # Add additional permitted params
-  # config.permitted_params += [:additional_field]
+  # config.layout = { application: 'application', admin: 'admin' }
 
   # Display the effective roles 'choose roles' input when an admin creates a new post
   config.use_effective_roles = false
@@ -107,8 +76,7 @@ EffectivePosts.setup do |config|
     default_from: 'info@example.com',
     admin_email: 'admin@example.com',
 
-    deliver_method: nil,   # :deliver (rails < 4.2), :deliver_now (rails >= 4.2) or :deliver_later
-    delayed_job_deliver: false
+    deliver_method: :deliver_now
   }
 
 end

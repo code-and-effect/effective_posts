@@ -18,11 +18,10 @@
   - if posts.length == 0
     %li= link_to 'None', effective_posts.posts_path, class: 'disabled'
 
-- if EffectivePosts.authorized?(self, :admin, :effective_posts)
+- if EffectiveResources.authorized?(self, :admin, :effective_posts)
   %h4.dashboard-title Admin
   %ul.list-unstyled
     %li= link_to 'All Posts', effective_posts.admin_posts_path
 
     - if @post.present?
-      %li= link_to 'Edit Post Content', effective_regions.edit_path(effective_posts.post_path(@post, exit: effective_posts.post_path(@post)))
       %li= link_to 'Edit Post Settings', effective_posts.edit_admin_post_path(@post)

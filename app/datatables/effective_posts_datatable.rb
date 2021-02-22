@@ -25,7 +25,9 @@ class EffectivePostsDatatable < Effective::Datatable
 
     col :created_at, label: 'Submitted at', visible: false
 
-    actions_col partial: '/admin/posts/actions', partial_as: :post
+    actions_col do |post|
+      dropdown_link_to('View', effective_post_path(post), target: '_blank')
+    end
   end
 
   collection do

@@ -9,5 +9,4 @@
     = render 'effective/posts/event', post: @post
 
     .post-body.post-content
-      = effective_region @post, :body do
-        %p Default content
+      = @post.body

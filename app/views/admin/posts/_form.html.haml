@@ -3,7 +3,13 @@
 
   - if f.object.persisted? || f.object.errors.include?(:slug)
     - current_url = effective_posts.post_path(f.object)
-  = f.text_field :slug, hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
+
+  = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+
+  = f.text_field :slug, required: f.object.persisted?,
+    hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
+
+  = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
 
   - if Array(EffectivePosts.categories).length > 1
     = f.select :category, EffectivePosts.categories
@@ -13,8 +19,7 @@
   - if EffectivePosts.use_active_storage
     = f.file_field :image, hint: 'An image for your post'
 
-  = f.ck_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-  = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
+  = f.rich_text_area :body, hint: 'The main body of your post'
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
@@ -22,17 +27,11 @@
 
   = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
-  - unless EffectivePosts.use_fullscreen_editor
-    = f.ck_editor :body, hint: 'The content of your post.'
-
   - if defined?(EffectiveRoles) && f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
     = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
 
   = f.submit do
     = f.save 'Save'
-
-    - if EffectivePosts.use_fullscreen_editor
-      = f.save 'Save and Edit Content', class: 'btn btn-secondary'
 
     = f.save 'Save and View', class: 'btn btn-secondary'
 

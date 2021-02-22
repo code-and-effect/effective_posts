@@ -2,10 +2,9 @@ class CreateEffectivePosts < ActiveRecord::Migration[4.2]
   def self.up
     create_table <%= @posts_table_name %> do |t|
       t.integer :user_id
+      t.string :user_type
 
       t.string :title
-      t.text :excerpt
-
       t.string :description
 
       t.string :category

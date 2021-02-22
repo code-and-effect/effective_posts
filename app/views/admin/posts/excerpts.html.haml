@@ -6,10 +6,10 @@
       %h2.post-title= link_to post, effective_post_path(post)
   .row
     .col-sm-6
-      %pre= effective_region(post, :body, editable: false)
+      %pre= post.body
 
     .col-sm-6
-      %pre= post_excerpt(post)
+      %pre= post.excerpt
 
   .row
     .col-sm-12
