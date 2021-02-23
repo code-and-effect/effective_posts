@@ -35,9 +35,6 @@ EffectivePosts.setup do |config|
   # Display the effective roles 'choose roles' input when an admin creates a new post
   config.use_effective_roles = false
 
-  # Hides the Save and Edit Content links from admin. They can just use the textarea input.
-  config.use_fullscreen_editor = true
-
   # Display a file upload field when the admin creates a new post to collect a post.image
   config.use_active_storage = true
 

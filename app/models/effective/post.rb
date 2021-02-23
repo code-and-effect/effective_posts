@@ -118,9 +118,8 @@ module Effective
         post.slug = post.slug + '-copy'
         post.draft = true
 
-        regions.each do |region|
-          post.regions.build(region.attributes.except('id', 'updated_at', 'created_at'))
-        end
+        post.body = body
+        post.excerpt = excerpt
       end
     end
 

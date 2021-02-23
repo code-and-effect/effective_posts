@@ -10,6 +10,7 @@ module Admin
     end
 
     submit :save, 'Save'
+    submit :save, 'Save and Add New', redirect: :new
     submit :save, 'Save and View', redirect: -> { effective_posts.post_path(resource) }
     submit :save, 'Duplicate', redirect: -> { effective_posts.new_admin_post_path(duplicate_id: resource.id) }
 

@@ -4,10 +4,10 @@
   - if f.object.persisted? || f.object.errors.include?(:slug)
     - current_url = effective_posts.post_path(f.object)
 
-  = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+    = f.text_field :slug, required: f.object.persisted?,
+      hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
 
-  = f.text_field :slug, required: f.object.persisted?,
-    hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
+  = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
 
   = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
 
@@ -32,8 +32,6 @@
 
   = f.submit do
     = f.save 'Save'
-
     = f.save 'Save and View', class: 'btn btn-secondary'
-
     - if f.object.persisted?
       = f.save 'Duplicate', class: 'btn btn-info'
