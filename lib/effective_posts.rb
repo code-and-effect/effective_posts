@@ -1,4 +1,3 @@
-require 'effective_datatables'
 require 'effective_resources'
 require 'effective_posts/engine'
 require 'effective_posts/version'

@@ -107,7 +107,7 @@ module Effective
     end
 
     def send_post_submitted_to_admin!
-      deliver_method = EffectivePosts.mailer[:deliver_method] || raise('expected an EffectivePosts.deliver_method')
+      deliver_method = EffectivePosts.mailer[:deliver_method] || EffectiveResources.deliver_method
       Effective::PostsMailer.post_submitted_to_admin(to_param).send(deliver_method)
     end
 
