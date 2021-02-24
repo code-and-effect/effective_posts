@@ -85,54 +85,7 @@ The per_page for posts may be configured via the `/app/config/initializers/effec
 
 ## Authorization
 
-All authorization checks are handled via the config.authorization_method found in the `app/config/initializers/effective_posts.rb` file.
-
-It is intended for flow through to CanCan or Pundit, but neither of those gems are required.
-
-This method is called by all controller actions with the appropriate action and resource
-
-Action will be one of [:index, :show, :new, :create, :edit, :update, :destroy]
-
-Resource will the appropriate Effective::Post object or class
-
-The authorization method is defined in the initializer file:
-
-```ruby
-# As a Proc (with CanCan)
-config.authorization_method = Proc.new { |controller, action, resource| authorize!(action, resource) }
-```
-
-```ruby
-# As a Custom Method
-config.authorization_method = :my_authorization_method
-```
-
-and then in your application_controller.rb:
-
-```ruby
-def my_authorization_method(action, resource)
-  current_user.is?(:admin) || EffectivePunditPolicy.new(current_user, resource).send('#{action}?')
-end
-```
-
-or disabled entirely:
-
-```ruby
-config.authorization_method = false
-```
-
-If the method or proc returns false (user is not authorized) an Effective::AccessDenied exception will be raised
-
-You can rescue from this exception by adding the following to your application_controller.rb:
-
-```ruby
-rescue_from Effective::AccessDenied do |exception|
-  respond_to do |format|
-    format.html { render 'static_pages/access_denied', :status => 403 }
-    format.any { render :text => 'Access Denied', :status => 403 }
-  end
-end
-```
+All authorization checks are handled via the effective_resources gem found in the `config/initializers/effective_resources.rb` file.
 
 ### Permissions
 
@@ -154,7 +107,6 @@ There are some obvious additional features that have yet to be implemented:
 - Tagging
 - Some kind of helper for displaying a sidebar for the categories
 - Post archives and date filtering
-
 
 ## License
 
