@@ -61,8 +61,8 @@ module EffectivePostsHelper
   def post_meta(post, date: true, datetime: false, category: true, author: true)
     [
       'Published',
-      ("on #{post.published_at.strftime('%B %d, %Y')}" if date),
-      ("on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime),
+      ("on #{post.published_at.strftime('%B %d, %Y')}" if date && post.published_at),
+      ("on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime && post.published_at),
       ("to #{link_to_post_category(post.category)}" if category && Array(EffectivePosts.categories).length > 1),
       ("by #{post.user.to_s.presence || 'Unknown'}" if author && EffectivePosts.post_meta_author && post.user.present?)
     ].compact.join(' ').html_safe

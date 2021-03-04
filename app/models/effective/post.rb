@@ -47,7 +47,7 @@ module Effective
     validates :title, presence: true, length: { maximum: 255 }
     validates :description, presence: true, length: { maximum: 150 }
     validates :category, presence: true
-    validates :published_at, presence: true
+    validates :published_at, presence: true, unless: -> { draft? }
 
     validates :start_at, presence: true, if: -> { category == 'events' }
 
