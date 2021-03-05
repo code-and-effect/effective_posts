@@ -3,14 +3,14 @@ require 'cgi'
 module EffectivePostsHelper
 
   def effective_posts_header_tags
-    return unless @post && @post.kind_of?(Effective::Post) && @post.persisted?
+    return unless @post && @post.kind_of?(Effective::Post) && @post.persisted? && @post.published?
 
     @effective_pages_og_type = 'article'
 
     tags = [
       tag(:meta, itemprop: 'author', content: @post.user.to_s),
       tag(:meta, itemprop: 'publisher', content: @post.user.to_s),
-      tag(:meta, itemprop: 'datePublised', content: @post.published_at.strftime('%FT%T%:z')),
+      tag(:meta, itemprop: 'datePublished', content: (@post.published_at || Time.zone.now).strftime('%FT%T%:z')),
       tag(:meta, itemprop: 'headline', content: @post.title)
     ].join("\n").html_safe
   end
@@ -74,7 +74,7 @@ module EffectivePostsHelper
     if post.draft?
       content_tag(:span, 'DRAFT', class: 'badge badge-info')
     elsif post.published? == false
-      content_tag(:span, "TO BE PUBLISHED AT #{post.published_at.strftime('%F %H:%M')}", class: 'badge badge-info')
+      content_tag(:span, "TO BE PUBLISHED AT #{post.published_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-info')
     end
   end
 
