@@ -5,10 +5,6 @@ module Admin
 
     include Effective::CrudController
 
-    if (config = EffectivePosts.layout)
-      layout(config.kind_of?(Hash) ? config[:admin] : config)
-    end
-
     submit :save, 'Save'
     submit :save, 'Save and Add New', redirect: :new
     submit :save, 'Save and View', redirect: -> { effective_posts.post_path(resource) }

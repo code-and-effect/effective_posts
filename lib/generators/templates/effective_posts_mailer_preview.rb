@@ -3,8 +3,8 @@
 # to see a preview of the following 3 emails:
 
 class EffectivePostsMailerPreview < ActionMailer::Preview
-  def post_submitted_to_admin
-    Effective::PostsMailer.post_submitted_to_admin(build_preview_post)
+  def post_submitted
+    EffectivePosts.mailer_class.post_submitted(build_preview_post)
   end
 
   protected

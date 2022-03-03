@@ -1,6 +1,6 @@
 %p A new post has been submitted and needs your approval before it may be displayed on the website:
 
-%p= link_to 'Approve Post', effective_posts.admin_approve_post_path(@post)
+%p= link_to 'Approve Post', effective_posts.approve_admin_post_url(@post)
 
 %hr
 
@@ -19,4 +19,4 @@
 
 %hr
 
-%p= link_to 'Approve Post', effective_posts.admin_approve_post_path(@post)
+%p= link_to 'Approve Post', effective_posts.approve_admin_post_url(@post)

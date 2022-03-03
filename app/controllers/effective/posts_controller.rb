@@ -7,10 +7,6 @@ module Effective
 
     include Effective::CrudController
 
-    if (config = EffectivePosts.layout)
-      layout(config.kind_of?(Hash) ? (config[:application] || config[:posts]) : config)
-    end
-
     def index
       @posts ||= Effective::Post.posts(
         user: current_user,
@@ -79,7 +75,7 @@ module Effective
         flash.now[:success] = 'Successfully submitted post'
 
         if EffectivePosts.submissions_require_approval
-          @post.send_post_submitted_to_admin!
+          @post.send_post_submitted!
         end
 
         render :submitted
@@ -104,12 +100,12 @@ module Effective
 
       EffectiveResources.authorize!(self, :update, @post)
 
-      if @post.update_attributes(post_params)
+      if @post.update(post_params)
         @page_title ||= 'Post Submitted'
         flash.now[:success] = 'Successfully re-submitted post'
 
         if EffectivePosts.submissions_require_approval && draft_was != true
-          @post.send_post_submitted_to_admin!
+          @post.send_post_submitted!
         end
 
         render :submitted

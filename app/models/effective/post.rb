@@ -106,9 +106,8 @@ module Effective
       (regions.to_a.sum { |region| (region.content || '').scan(/\w+/).size } / reading_speed).seconds
     end
 
-    def send_post_submitted_to_admin!
-      deliver_method = EffectivePosts.mailer[:deliver_method] || EffectiveResources.deliver_method
-      Effective::PostsMailer.post_submitted_to_admin(to_param).send(deliver_method)
+    def send_post_submitted!
+      EffectivePosts.send_email(:post_submitted, self)
     end
 
     # Returns a duplicated post object, or throws an exception

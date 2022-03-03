@@ -8,7 +8,7 @@
   - if Array(EffectivePosts.categories).length > 1
     = f.select :category, EffectivePosts.categories
   - else
-    = f.hidden_field :category, (EffectivePosts.categories.first || 'posts')
+    = f.hidden_field :category, value: (EffectivePosts.categories.first || 'posts')
 
   - if EffectivePosts.use_active_storage
     = f.file_field :image, hint: 'An image for your post'

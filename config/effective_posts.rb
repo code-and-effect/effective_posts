@@ -3,7 +3,7 @@ EffectivePosts.setup do |config|
 
   # Every post must belong to one or more category.
   # Don't use the category :posts
-  config.categories = [:news, :events]
+  config.categories = [:news]
 
   # Create top level routes for each category
   # Should each of the above categories have a top level route created for it
@@ -49,31 +49,19 @@ EffectivePosts.setup do |config|
   config.submissions_require_approval = true
 
   # The Thank you message when they submit a post
-  config.submissions_note = "News & Event submitted! A confirmation email has been sent to the website owner. When approved, your submission will appear on the website."
+  config.submissions_note = "Post submitted! A confirmation email has been sent to the website owner. When approved, your submission will appear on the website."
 
   # Mailer Settings
-  # effective_posts will send the admin an email when a post is submitted
-  # For all the emails, the same :subject_prefix will be prefixed.  Leave as nil / empty string if you don't want any prefix
+  # Please see config/initializers/effective_resources.rb for default effective_* gem mailer settings
   #
-  # The subject_for_post_submitted_to_admin can be one of:
-  # - nil / empty string to use the built in defaults
-  # - A string with the full subject line for this email
-  # - A Proc to create the subject line based on the email
-  # In all three of these cases, the subject_prefix will still be used.
-
-  # The Procs are the same for admin & buyer receipt, the seller Proc is different
-  # subject_for_post_submitted_to_admin: Proc.new { |post| "Post needs approval"}
-
-  config.mailer = {
-    subject_prefix: '[example]',
-    subject_for_post_submitted_to_admin: '',
-
-    layout: 'effective_posts_mailer_layout',
-
-    default_from: 'info@example.com',
-    admin_email: 'admin@example.com',
-
-    deliver_method: :deliver_now
-  }
-
+  # Configure the class responsible to send e-mails.
+  # config.mailer = 'Effective::PostsMailer'
+  #
+  # Override effective_resource mailer defaults
+  #
+  # config.parent_mailer = nil      # The parent class responsible for sending emails
+  # config.deliver_method = nil     # The deliver method, deliver_later or deliver_now
+  # config.mailer_layout = nil      # Default mailer layout
+  # config.mailer_sender = nil      # Default From value
+  # config.mailer_admin = nil       # Default To value for Admin correspondence
 end

@@ -18,6 +18,10 @@ module EffectivePosts
 
   include EffectiveGem
 
+  def self.mailer_class
+    mailer&.constantize || Effective::PostsMailer
+  end
+
   def self.permitted_params
     @permitted_params ||= [
       :title, :excerpt, :description, :draft, :category, :slug, :published_at, :body, :tags, :extra,
