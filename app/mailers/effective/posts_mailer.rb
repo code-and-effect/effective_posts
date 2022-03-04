@@ -1,22 +1,17 @@
 module Effective
   class PostsMailer < EffectivePosts.parent_mailer_class
-    helper EffectivePostsHelper
+    include EffectiveMailer
 
-    default from: -> { EffectivePosts.mailer_sender }
-    layout -> { EffectivePosts.mailer_layout }
+    helper EffectivePostsHelper
 
     def post_submitted(resource, opts = {})
       raise('expected an Effective::Post') unless resource.kind_of?(Effective::Post)
 
       @post = resource
+      subject = subject_for(__method__, 'Post Submitted', resource, opts)
+      headers = headers_for(resource, opts)
 
-      mail(to: EffectivePosts.mailer_admin, **headers_for(resource, opts))
-    end
-
-    protected
-
-    def headers_for(resource, opts = {})
-      resource.respond_to?(:log_changes_datatable) ? opts.merge(log: resource) : opts
+      mail(to: mailer_admin, subject: subject, **headers)
     end
 
   end
