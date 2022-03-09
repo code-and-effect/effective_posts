@@ -83,7 +83,7 @@ module Effective
 
       EffectivePosts.authorized?(self, :update, @post)
 
-      if @post.update_attributes(post_params)
+      if @post.update(post_params)
         @page_title ||= 'Post Submitted'
         flash.now[:success] = 'Successfully re-submitted post'
 

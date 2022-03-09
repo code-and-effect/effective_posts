@@ -60,7 +60,7 @@ module Admin
 
       authorize_effective_posts!
 
-      if @post.update_attributes(post_params)
+      if @post.update(post_params)
         if params[:commit] == 'Save and Edit Content'
           redirect_to effective_regions.edit_path(effective_posts.post_path(@post), :exit => effective_posts.edit_admin_post_path(@post))
         elsif params[:commit] == 'Save and Add New'
@@ -107,7 +107,7 @@ module Admin
 
       authorize_effective_posts!
 
-      if @post.update_attributes(draft: false)
+      if @post.update(draft: false)
         flash[:success] = 'Successfully approved post.  It is now displayed on the website.'
       else
         flash[:danger] = "Unable to approve post: #{@post.errors.full_messages.join(', ')}"
