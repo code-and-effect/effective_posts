@@ -13,7 +13,11 @@
   - if EffectivePosts.use_active_storage
     = f.file_field :image, hint: 'An image for your post'
 
-  = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+  - if defined?(EffectiveArticleEditor)
+    = f.article_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+  - else
+    = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
+
   = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
@@ -22,6 +26,9 @@
 
   = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
-  = f.rich_text_area :body, hint: 'The main body of your post'
+  - if defined?(EffectiveArticleEditor)
+    = f.article_editor :body, hint: 'The main body of your post'
+  - else
+    = f.rich_text_area :body, hint: 'The main body of your post'
 
   = f.submit 'Save'
