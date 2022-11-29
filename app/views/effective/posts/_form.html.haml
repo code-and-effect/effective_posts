@@ -1,4 +1,4 @@
-= effective_form_with(model: post, url: post.persisted? ? effective_posts.post_path(post.id) : effective_posts.posts_path) do |f|
+= effective_form_with(model: post, engine: true) do |f|
   = f.text_field :title, hint: 'The title of your post.'
 
   - if f.object.persisted? || f.object.errors.include?(:slug)
