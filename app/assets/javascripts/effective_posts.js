@@ -1,1 +1,1 @@
-//= require effective_pages/additional_fields
+//= require effective_posts/additional_fields
