@@ -1,46 +1,32 @@
 require 'kaminari'
 require 'nokogiri'
+require 'effective_resources'
 require 'effective_datatables'
 require 'effective_regions'
 require 'effective_posts/engine'
 require 'effective_posts/version'
 
 module EffectivePosts
-  mattr_accessor :posts_table_name
 
-  mattr_accessor :authorization_method
-  mattr_accessor :permitted_params
+  def self.config_keys
+    [
+      :posts_table_name, :permitted_params,
+      :layout, :simple_form_options, :admin_simple_form_options,
 
-  mattr_accessor :layout
-  mattr_accessor :simple_form_options
-  mattr_accessor :admin_simple_form_options
+      :categories, :use_category_routes,
+      :use_effective_roles, :use_fullscreen_editor,
 
-  mattr_accessor :categories
-  mattr_accessor :use_category_routes
+      :per_page, :post_meta_author,
 
-  mattr_accessor :use_effective_roles
-  mattr_accessor :use_fullscreen_editor
+      :submissions_enabled, :submissions_require_current_user, :submissions_require_approval, :submissions_note,
 
-  mattr_accessor :per_page
-  mattr_accessor :post_meta_author
-
-  mattr_accessor :submissions_enabled
-  mattr_accessor :submissions_require_current_user
-  mattr_accessor :submissions_require_approval
-  mattr_accessor :submissions_note
-
-  # These are hashes of configs
-  mattr_accessor :mailer
-
-  def self.setup
-    yield self
+    ]
   end
 
-  def self.authorized?(controller, action, resource)
-    if authorization_method.respond_to?(:call) || authorization_method.kind_of?(Symbol)
-      raise Effective::AccessDenied.new() unless (controller || self).instance_exec(controller, action, resource, &authorization_method)
-    end
-    true
+  include EffectiveGem
+
+  def self.mailer_class
+    mailer&.constantize || Effective::PostsMailer
   end
 
   def self.permitted_params

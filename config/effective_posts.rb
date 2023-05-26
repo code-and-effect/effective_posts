@@ -22,30 +22,6 @@ EffectivePosts.setup do |config|
   # The author is the user that created the Effective::Post object
   config.post_meta_author = true
 
-  # Authorization Method
-  #
-  # This method is called by all controller actions with the appropriate action and resource
-  # If the method returns false, an Effective::AccessDenied Error will be raised (see README.md for complete info)
-  #
-  # Use via Proc (and with CanCan):
-  # config.authorization_method = Proc.new { |controller, action, resource| can?(action, resource) }
-  #
-  # Use via custom method:
-  # config.authorization_method = :my_authorization_method
-  #
-  # And then in your application_controller.rb:
-  #
-  # def my_authorization_method(action, resource)
-  #   current_user.is?(:admin)
-  # end
-  #
-  # Or disable the check completely:
-  # config.authorization_method = false
-  config.authorization_method = Proc.new do |controller, action, resource|
-    authorize!(action, resource)
-    resource.respond_to?(:roles_permit?) ? resource.roles_permit?(current_user) : true
-  end
-
   # Layout Settings
   # Configure the Layout per controller, or all at once
   config.layout = {
@@ -91,29 +67,18 @@ EffectivePosts.setup do |config|
   config.submissions_note = "News & Event submitted! A confirmation email has been sent to the website owner. When approved, your submission will appear on the website."
 
   # Mailer Settings
-  # effective_posts will send the admin an email when a post is submitted
-  # For all the emails, the same :subject_prefix will be prefixed.  Leave as nil / empty string if you don't want any prefix
+  # Please see config/initializers/effective_resources.rb for default effective_* gem mailer settings
   #
-  # The subject_for_post_submitted_to_admin can be one of:
-  # - nil / empty string to use the built in defaults
-  # - A string with the full subject line for this email
-  # - A Proc to create the subject line based on the email
-  # In all three of these cases, the subject_prefix will still be used.
-
-  # The Procs are the same for admin & buyer receipt, the seller Proc is different
-  # subject_for_post_submitted_to_admin: Proc.new { |post| "Post needs approval"}
-
-  config.mailer = {
-    subject_prefix: '[example]',
-    subject_for_post_submitted_to_admin: '',
-
-    layout: 'effective_posts_mailer_layout',
-
-    default_from: 'info@example.com',
-    admin_email: 'admin@example.com',
-
-    deliver_method: nil,   # :deliver (rails < 4.2), :deliver_now (rails >= 4.2) or :deliver_later
-    delayed_job_deliver: false
-  }
+  # Configure the class responsible to send e-mails.
+  # config.mailer = 'Effective::PostsMailer'
+  #
+  # Override effective_resource mailer defaults
+  #
+  # config.parent_mailer = nil      # The parent class responsible for sending emails
+  # config.deliver_method = nil     # The deliver method, deliver_later or deliver_now
+  # config.mailer_layout = nil      # Default mailer layout
+  # config.mailer_sender = nil      # Default From value
+  # config.mailer_admin = nil       # Default To value for Admin correspondence
+  # config.mailer_subject = nil     # Proc.new method used to customize Subject
 
 end

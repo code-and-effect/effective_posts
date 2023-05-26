@@ -6,7 +6,7 @@ module Effective
 
     self.table_name = EffectivePosts.posts_table_name.to_s
 
-    belongs_to :user
+    belongs_to :user, optional: true
 
     # Attributes
     # title             :string
@@ -35,8 +35,7 @@ module Effective
     scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
 
     scope :posts, -> (user: nil, category: nil, drafts: false) {
-      scope = (Rails::VERSION::MAJOR > 3 ? all : scoped)
-      scope = scope.includes(:regions).order(published_at: :desc)
+      scope = includes(:regions).order(published_at: :desc)
 
       if defined?(EffectiveAssets)
         scope = scope.includes(attachments: :asset)
@@ -87,7 +86,7 @@ module Effective
     end
 
     def send_post_submitted_to_admin!
-      send_email(:post_submitted_to_admin, to_param)
+      send_email(:post_submitted_to_admin)
     end
 
     # Returns a duplicated post object, or throws an exception
@@ -110,19 +109,8 @@ module Effective
 
     private
 
-    def send_email(email, *mailer_args)
-      begin
-        if EffectivePosts.mailer[:delayed_job_deliver] && EffectivePosts.mailer[:deliver_method] == :deliver_later
-          Effective::PostsMailer.delay.public_send(email, *mailer_args)
-        elsif EffectivePosts.mailer[:deliver_method].present?
-          Effective::PostsMailer.public_send(email, *mailer_args).public_send(EffectivePosts.mailer[:deliver_method])
-        else
-          Effective::PostsMailer.public_send(email, *mailer_args).deliver_now
-        end
-      rescue => e
-        raise e unless Rails.env.production?
-        return false
-      end
+    def send_email(email)
+      EffectivePosts.send_email(email, self)
     end
 
   end

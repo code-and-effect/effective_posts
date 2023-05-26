@@ -20,7 +20,7 @@ module Effective
         @posts = @posts.where(search) if search.present?
       end
 
-      EffectivePosts.authorized?(self, :index, Effective::Post)
+      EffectiveResources.authorize!(self, :index, Effective::Post)
 
       @page_title = (params[:page_title] || params[:category] || params[:defaults].try(:[], :category) || 'Posts').titleize
     end
@@ -29,11 +29,7 @@ module Effective
       @posts ||= Effective::Post.posts(user: current_user, category: params[:category], drafts: (params[:edit].to_s == 'true' || params[:preview].to_s == 'true'))
       @post = @posts.find(params[:id])
 
-      if @post.respond_to?(:roles_permit?)
-        raise Effective::AccessDenied unless @post.roles_permit?(current_user)
-      end
-
-      EffectivePosts.authorized?(self, :show, @post)
+      EffectiveResources.authorize!(self, :show, @post)
 
       @page_title = @post.title
     end
@@ -43,7 +39,7 @@ module Effective
       @post ||= Effective::Post.new(published_at: Time.zone.now)
       @page_title = 'New Post'
 
-      EffectivePosts.authorized?(self, :new, @post)
+      EffectiveResources.authorize!(self, :new, @post)
     end
 
     def create
@@ -51,7 +47,7 @@ module Effective
       @post.user = current_user if defined?(current_user)
       @post.draft = (EffectivePosts.submissions_require_approval == true)
 
-      EffectivePosts.authorized?(self, :create, @post)
+      EffectiveResources.authorize!(self, :create, @post)
 
       if @post.save
         @page_title ||= 'Post Submitted'
@@ -73,7 +69,7 @@ module Effective
       @post ||= Effective::Post.find(params[:id])
       @page_title ||= 'Edit Post'
 
-      EffectivePosts.authorized?(self, :edit, @post)
+      EffectiveResources.authorize!(self, :edit, @post)
     end
 
     def update
@@ -81,7 +77,7 @@ module Effective
       draft_was = @post.draft
       @post.draft = (EffectivePosts.submissions_require_approval == true)
 
-      EffectivePosts.authorized?(self, :update, @post)
+      EffectiveResources.authorize!(self, :update, @post)
 
       if @post.update(post_params)
         @page_title ||= 'Post Submitted'
@@ -102,7 +98,7 @@ module Effective
     def destroy
       @post ||= Effective::Post.find(params[:id])
 
-      EffectivePosts.authorized?(self, :destroy, @post)
+      EffectiveResources.authorize!(self, :destroy, @post)
 
       if @post.destroy
         flash[:success] = 'Successfully deleted post'
