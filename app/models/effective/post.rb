@@ -9,6 +9,10 @@ module Effective
                         :meta_description,
                         :slug,
                       ],
+                      associated_against: {
+                        rich_text_body: [:body],
+                        rich_text_excerpt: [:body],
+                      },
                       using: {
                         trigram: {},
                         tsearch: {
