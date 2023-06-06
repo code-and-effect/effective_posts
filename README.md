@@ -100,6 +100,10 @@ if user.admin?
 end
 ```
 
+## Search
+
+If you use `pg_search` then `Effective::Posts` will be also included on its `multisearch` by default, allowing you to search across all posts.
+
 ## Future Plans
 
 There are some obvious additional features that have yet to be implemented:
