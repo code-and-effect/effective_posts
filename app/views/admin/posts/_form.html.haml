@@ -38,9 +38,9 @@
       - if defined?(EffectiveRoles) && f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
         = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
 
-    - if respond_to?(:acts_as_tagged?)
+    - if f.object.class.respond_to?(:acts_as_tagged?)
       = tab "Tags" do
-        = tags_input(f, post)
+        = render 'effective/tags/fields', f: f
 
   = f.submit do
     = f.save 'Save'
