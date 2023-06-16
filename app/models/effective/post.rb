@@ -1,5 +1,26 @@
 module Effective
   class Post < ActiveRecord::Base
+    if defined?(PgSearch)
+      include PgSearch::Model
+
+      multisearchable against: [
+                        :title,
+                        :description,
+                        :slug,
+                      ],
+                      associated_against: {
+                        rich_texts: [:body],
+                      },
+                      using: {
+                        trigram: {},
+                        tsearch: {
+                          highlight: true,
+                        }
+                      },
+                      if: -> (post) { !post.draft }
+
+    end
+
     attr_accessor :current_user
 
     acts_as_slugged
