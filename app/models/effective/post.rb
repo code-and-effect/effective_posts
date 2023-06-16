@@ -9,12 +9,6 @@ module Effective
                         :slug,
                       ],
                       associated_against: {
-                        rich_texts: [:body],
-                        :menu_title,
-                        :meta_description,
-                        :slug,
-                      ],
-                      associated_against: {
                         rich_text_body: [:body],
                         rich_text_excerpt: [:body],
                       },
@@ -24,7 +18,7 @@ module Effective
                           highlight: true,
                         }
                       },
-                      if: -> (post) { !post.draft }
+                      if: -> (post) { post.published? }
     end
 
     attr_accessor :current_user
