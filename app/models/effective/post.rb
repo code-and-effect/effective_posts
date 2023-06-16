@@ -17,8 +17,7 @@ module Effective
                         tsearch: {
                           highlight: true,
                         }
-                      },
-                      if: -> (post) { post.published? }
+                      }
     end
 
     attr_accessor :current_user
