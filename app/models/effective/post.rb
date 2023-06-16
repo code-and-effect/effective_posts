@@ -10,6 +10,13 @@ module Effective
                       ],
                       associated_against: {
                         rich_texts: [:body],
+                        :menu_title,
+                        :meta_description,
+                        :slug,
+                      ],
+                      associated_against: {
+                        rich_text_body: [:body],
+                        rich_text_excerpt: [:body],
                       },
                       using: {
                         trigram: {},
@@ -18,7 +25,6 @@ module Effective
                         }
                       },
                       if: -> (post) { !post.draft }
-
     end
 
     attr_accessor :current_user
@@ -26,6 +32,7 @@ module Effective
     acts_as_slugged
 
     log_changes if respond_to?(:log_changes)
+    acts_as_tagged if respond_to?(:acts_as_tagged)
     acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
 
     has_one_attached :image
