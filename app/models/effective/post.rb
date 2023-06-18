@@ -122,6 +122,10 @@ module Effective
       category == 'events'
     end
 
+    def start_time
+      start_at
+    end
+
     # 3.333 words/second is the default reading speed.
     def time_to_read_in_seconds(reading_speed = 3.333)
       (regions.to_a.sum { |region| (region.content || '').scan(/\w+/).size } / reading_speed).seconds
