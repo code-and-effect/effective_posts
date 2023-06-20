@@ -3,21 +3,7 @@ module Effective
     if defined?(PgSearch)
       include PgSearch::Model
 
-      multisearchable against: [
-                        :title,
-                        :description,
-                        :slug,
-                      ],
-                      associated_against: {
-                        rich_text_body: [:body],
-                        rich_text_excerpt: [:body],
-                      },
-                      using: {
-                        trigram: {},
-                        tsearch: {
-                          highlight: true,
-                        }
-                      }
+      multisearchable against: [:title, :description, :rich_text_body, :rich_text_excerpt]
     end
 
     attr_accessor :current_user
