@@ -1,17 +1,14 @@
--# Adding additional .effective-posts-category-#{category} will correctly show/hide on Posts#new forms
-
 - # Event specific fields
-.effective-post-category-events.card.mb-4{style: ('display: none' unless f.object.category == 'events')}
-  .card-body
-    %h5.card-title Event Info
-    = form.datetime_field :start_at, required: false, hint: 'Display a start time for this event.'
+= f.show_if_any(:category, EffectivePosts.event_categories) do
+  = card('Event Info') do
+    = f.datetime_field :start_at, required: false, hint: 'Display a start time for this event.'
 
-    = form.datetime_field :end_at, required: false, hint: 'Display an end time of this event.'
+    = f.datetime_field :end_at, required: false, hint: 'Display an end time of this event.'
 
-    = form.text_field :location, required: false, hint: 'Display a location where this event is taking place.'
+    = f.text_field :location, required: false, hint: 'Display a location where this event is taking place.'
 
-    = form.text_field :website_name, label: 'External website',
+    = f.text_field :website_name, label: 'External website',
       placeholder: 'Buy Tickets', hint: 'The label of an external website.'
 
-    = form.url_field :website_href, label: 'External website address',
+    = f.url_field :website_href, label: 'External website address',
       placeholder: 'http://', hint: 'The address of an external website (start with http:// or https://).'

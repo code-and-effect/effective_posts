@@ -11,7 +11,7 @@ EffectivePosts::Engine.routes.draw do
 
     # Blog Routes
     match 'blog/category/:category', to: 'posts#index', via: :get, constraints: lambda { |req|
-      EffectivePosts.use_blog_routes && EffectivePosts.categories.include?(req.params['category'].to_sym)
+      EffectivePosts.use_blog_routes && EffectivePosts.category(req.params['category']).present?
     }
 
     resources :posts, only: [:index, :show], path: 'blog', constraints: lambda { |req|
@@ -20,11 +20,11 @@ EffectivePosts::Engine.routes.draw do
 
     # Category routes
     match ':category', to: 'posts#index', via: :get, constraints: lambda { |req|
-      EffectivePosts.use_category_routes && EffectivePosts.categories.include?(req.params['category'].to_sym)
+      EffectivePosts.use_category_routes && EffectivePosts.category(req.params['category']).present?
     }
 
     match ":category/:id", to: 'posts#show', via: :get, constraints: lambda { |req|
-      EffectivePosts.use_category_routes && EffectivePosts.categories.include?(req.params['category'].to_sym)
+      EffectivePosts.use_category_routes && EffectivePosts.category(req.params['category']).present?
     }
   end
 

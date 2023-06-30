@@ -16,7 +16,7 @@ module EffectivePostsHelper
   end
 
   def effective_post_path(post, opts = nil)
-    category = post.category.to_s.downcase
+    category = post.category.to_s.downcase.parameterize
     opts ||= {}
 
     if EffectivePosts.use_blog_routes

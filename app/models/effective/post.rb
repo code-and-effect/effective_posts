@@ -9,7 +9,6 @@ module Effective
     attr_accessor :current_user
 
     acts_as_slugged
-
     log_changes if respond_to?(:log_changes)
     acts_as_tagged if respond_to?(:acts_as_tagged)
     acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
@@ -19,7 +18,7 @@ module Effective
     has_rich_text :excerpt
     has_rich_text :body
 
-    self.table_name = EffectivePosts.posts_table_name.to_s
+    self.table_name = (EffectivePosts.posts_table_name || :posts).to_s
 
     belongs_to :user, polymorphic: true, optional: true
 
@@ -55,13 +54,16 @@ module Effective
     validates :description, presence: true, length: { maximum: 150 }
     validates :category, presence: true
     validates :published_at, presence: true, unless: -> { draft? }
-
     validates :start_at, presence: true, if: -> { category == 'events' }
 
     scope :drafts, -> { where(draft: true) }
     scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
     scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
-    scope :with_category, -> (category) { where(category: category.to_s.downcase) }
+    scope :with_category, -> (category) { where(category: category) }
+
+    # Kind of a meta category
+    scope :news, -> { where(category: EffectivePosts.news_categories) }
+    scope :events, -> { where(category: EffectivePosts.event_categories) }
 
     scope :deep, -> { with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds }
 
@@ -105,7 +107,7 @@ module Effective
     end
 
     def event?
-      category == 'events'
+      Array(EffectivePosts.event_categories).include?(category)
     end
 
     def start_time

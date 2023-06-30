@@ -8,15 +8,17 @@ module Effective
     include Effective::CrudController
 
     def index
+      @category = EffectivePosts.category(params[:category])
+
       @posts ||= Effective::Post.posts(
         user: current_user,
-        category: params[:category],
+        category: @category,
         unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts)
       )
 
       @posts = @posts.paginate(page: params[:page])
 
-      if params[:category] == 'events'
+      if Array(EffectivePosts.event_categories).map(&:to_s).include?(@category)
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
       end
 
@@ -27,12 +29,14 @@ module Effective
 
       EffectiveResources.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= [(params[:category] || 'Blog').to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
+      @page_title ||= [(@category || 'Blog').to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
       @canonical_url ||= helpers.effective_post_category_url(params[:category], page: params[:page])
     end
 
     def show
-      @posts ||= Effective::Post.posts(user: current_user, category: params[:category], unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts))
+      @category = EffectivePosts.category(params[:category])
+
+      @posts ||= Effective::Post.posts(user: current_user, unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts))
       @post = @posts.find(params[:id])
 
       if @post.respond_to?(:roles_permit?)
