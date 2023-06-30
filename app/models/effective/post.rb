@@ -107,7 +107,7 @@ module Effective
     end
 
     def event?
-      Array(EffectivePosts.event_categories).include?(category)
+      EffectivePosts.event_categories.include?(EffectivePosts.category(category))
     end
 
     def start_time
