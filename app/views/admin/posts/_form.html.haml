@@ -1,49 +1,7 @@
-= effective_form_with(model: [:admin, post], engine: true) do |f|
-  = tabs do
-    = tab "Post" do
-      = f.text_field :title, hint: 'The title of your post.'
+= tabs do
+  = tab "Post" do
+    = render 'admin/posts/form_post', post: post
 
-      - if f.object.persisted? || f.object.errors.include?(:slug)
-        - current_url = effective_posts.post_path(f.object)
-
-        = f.text_field :slug, required: f.object.persisted?,
-          hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
-
-      - if defined?(EffectiveArticleEditor)
-        = f.article_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-      - else
-        = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-
-      = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
-
-      - if Array(EffectivePosts.categories).length > 1
-        = f.select :category, EffectivePosts.categories
-      - else
-        = f.hidden_field :category, value: (EffectivePosts.categories.first || 'posts')
-
-      - if EffectivePosts.use_active_storage
-        = f.file_field :image, hint: 'An image for your post'
-
-      - if defined?(EffectiveArticleEditor)
-        = f.article_editor :body, hint: 'The main body of your post'
-      - else
-        = f.rich_text_area :body, hint: 'The main body of your post'
-
-      = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
-
-      = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
-
-      = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
-
-      - if defined?(EffectiveRoles) && f.object.respond_to?(:roles) && EffectivePosts.use_effective_roles
-        = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
-
-    - if f.object.class.respond_to?(:acts_as_tagged?)
-      = tab "Tags" do
-        = render 'effective/tags/fields', f: f
-
-  = f.submit do
-    = f.save 'Save'
-    = f.save 'Save and View', class: 'btn btn-secondary'
-    - if f.object.persisted?
-      = f.save 'Duplicate', class: 'btn btn-info'
+    - if post.persisted? && post.respond_to?(:log_changes_datatable)
+      = tab "Logs" do
+        = render_inline_datatable(post.log_changes_datatable)

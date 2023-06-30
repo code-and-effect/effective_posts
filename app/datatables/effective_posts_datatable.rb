@@ -1,4 +1,12 @@
 class EffectivePostsDatatable < Effective::Datatable
+  filters do
+    scope :all
+    scope :published
+    scope :unpublished
+    scope :news
+    scope :events
+  end
+
   datatable do
     order :published_at, :desc
 
@@ -22,7 +30,6 @@ class EffectivePostsDatatable < Effective::Datatable
     col :start_at
     col :end_at, visible: false
     col :location, visible: false
-
     col :created_at, label: 'Submitted at', visible: false
 
     actions_col do |post|

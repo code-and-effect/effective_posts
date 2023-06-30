@@ -1,9 +1,14 @@
 EffectivePosts.setup do |config|
   config.posts_table_name = :posts
 
-  # Every post must belong to one or more category.
-  # Don't use the category :posts
-  config.categories = [:news]
+  # Every post must have a category
+  # Each of these categories parameterized value will be a top level route
+  config.categories = ['News', 'Events']
+
+  # Which of the above categories will be considered post.event? 
+  # Used to select the fields on the Admin form
+  # Can't be unique. Must be subset of config.categories
+  config.event_categories = ['Events']
 
   # Create top level routes for each category
   # Should each of the above categories have a top level route created for it
