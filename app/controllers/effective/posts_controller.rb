@@ -18,7 +18,7 @@ module Effective
 
       @posts = @posts.paginate(page: params[:page])
 
-      if Array(EffectivePosts.event_categories).map(&:to_s).include?(@category)
+      if EffectivePosts.event_categories.include?(@category)
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
       end
 
