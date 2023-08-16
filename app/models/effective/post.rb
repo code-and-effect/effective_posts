@@ -125,14 +125,17 @@ module Effective
 
     # Returns a duplicated post object, or throws an exception
     def duplicate
-      Post.new(attributes.except('id', 'updated_at', 'created_at')).tap do |post|
-        post.title = post.title + ' (Copy)'
-        post.slug = post.slug + '-copy'
-        post.draft = true
+      post = Post.new(attributes.except('id', 'updated_at', 'created_at', 'tags'))
 
-        post.body = body
-        post.excerpt = excerpt
-      end
+      post.assign_attributes(
+        title: post.title + ' (Copy)',
+        slug: post.slug + '-copy',
+        draft: true,
+        body: body,
+        excerpt: excerpt
+      )
+
+      post
     end
 
     def duplicate!
