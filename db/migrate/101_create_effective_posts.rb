@@ -1,6 +1,6 @@
-class CreateEffectivePosts < ActiveRecord::Migration[4.2]
-  def self.up
-    create_table <%= @posts_table_name %> do |t|
+class CreateEffectivePosts < ActiveRecord::Migration[6.0]
+  def change
+    create_table :posts do |t|
       t.integer :user_id
       t.string :user_type
 
@@ -30,9 +30,4 @@ class CreateEffectivePosts < ActiveRecord::Migration[4.2]
       t.datetime :created_at
     end
   end
-
-  def self.down
-    drop_table <%= @posts_table_name %>
-  end
-
 end
