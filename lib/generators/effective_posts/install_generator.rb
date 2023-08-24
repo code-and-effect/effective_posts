@@ -20,9 +20,7 @@ module EffectivePosts
       end
 
       def create_migration_file
-        @posts_table_name = ':' + EffectivePosts.posts_table_name.to_s
-
-        migration_template ('../' * 3) + 'db/migrate/01_create_effective_posts.rb.erb', 'db/migrate/create_effective_posts.rb'
+        migration_template ('../' * 3) + 'db/migrate/101_create_effective_posts.rb', 'db/migrate/create_effective_posts.rb'
       end
 
       def copy_mailer_preview
