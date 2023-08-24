@@ -57,8 +57,8 @@ module Effective
     validates :start_at, presence: true, if: -> { category == 'events' }
 
     scope :drafts, -> { where(draft: true) }
-    scope :published, -> { where(draft: false).where("#{EffectivePosts.posts_table_name}.published_at < ?", Time.zone.now) }
-    scope :unpublished, -> { where(draft: true).or(where("#{EffectivePosts.posts_table_name}.published_at > ?", Time.zone.now)) }
+    scope :published, -> { where(draft: false).where("published_at < ?", Time.zone.now) }
+    scope :unpublished, -> { where(draft: true).or(where("published_at > ?", Time.zone.now)) }
     scope :with_category, -> (category) { where(category: category) }
 
     # Kind of a meta category
