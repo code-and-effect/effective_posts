@@ -4,10 +4,11 @@ module Effective
 
     helper EffectivePostsHelper
 
-    def post_submitted_to_admin(post_param, opts = {})
-      @post = (post_param.kind_of?(Effective::Post) ? post_param : Effective::Post.find(post_param))
+    def post_submitted_to_admin(resource, opts = {})
+      @post = resource
+      raise('expected a post') unless resource.kind_of?(Effective::Post)
 
-      subject = subject_for(__method__, 'Post Submitted', @post, opts)
+      subject = subject_for(__method__, 'Post Submitted', resource, opts)
       headers = headers_for(resource, opts)
 
       mail(to: mailer_admin, subject: subject, **headers)

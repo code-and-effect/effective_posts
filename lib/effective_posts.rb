@@ -11,15 +11,13 @@ module EffectivePosts
   def self.config_keys
     [
       :posts_table_name, :permitted_params,
+      :mailer, :parent_mailer, :deliver_method, :mailer_layout, :mailer_sender, :mailer_admin, :mailer_subject,
       :layout, :simple_form_options, :admin_simple_form_options,
 
-      :categories, :use_category_routes,
-      :use_effective_roles, :use_fullscreen_editor,
-
+      :categories, :use_category_routes, :use_effective_roles, :use_fullscreen_editor,
       :per_page, :post_meta_author,
 
       :submissions_enabled, :submissions_require_current_user, :submissions_require_approval, :submissions_note,
-
     ]
   end
 
