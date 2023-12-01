@@ -65,7 +65,11 @@ module Effective
     scope :news, -> { where(category: EffectivePosts.news_categories) }
     scope :events, -> { where(category: EffectivePosts.event_categories) }
 
-    scope :deep, -> { with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds }
+    scope :deep, -> { 
+      base = with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds 
+      base = base.includes(:pg_search_document) if defined?(PgSearch)
+      base
+    }
 
     scope :paginate, -> (page: nil, per_page: EffectivePosts.per_page) {
       page = (page || 1).to_i
