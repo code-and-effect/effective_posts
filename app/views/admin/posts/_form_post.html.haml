@@ -36,6 +36,8 @@
 
   = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
+  = f.check_box :archived, label: 'Yes, this post is archived. It will not be displayed.'
+
   - if EffectivePosts.use_effective_roles
     = render partial: '/admin/posts/roles', locals: { post: post, form: f, f: f }
 
