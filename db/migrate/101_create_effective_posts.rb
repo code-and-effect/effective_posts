@@ -10,12 +10,13 @@ class CreateEffectivePosts < ActiveRecord::Migration[6.0]
       t.string :category
       t.string :slug
 
-      t.boolean :draft, :default => false
+      t.boolean :draft, default: false
       t.datetime :published_at
 
       t.text :tags
 
-      t.integer :roles_mask, :default => 0
+      t.integer :roles_mask, default: 0
+      t.boolean :archived, default: false
 
       # Events fields
       t.datetime :start_at

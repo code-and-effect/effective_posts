@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 101) do
     t.datetime "published_at"
     t.text "tags"
     t.integer "roles_mask", default: 0
+    t.boolean "archived", default: false
     t.datetime "start_at"
     t.datetime "end_at"
     t.string "location"

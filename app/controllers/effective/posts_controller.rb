@@ -36,7 +36,9 @@ module Effective
     def show
       @category = EffectivePosts.category(params[:category])
 
-      @posts ||= Effective::Post.posts(user: current_user, unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts))
+      admin = EffectiveResources.authorized?(self, :admin, :effective_posts)
+
+      @posts ||= Effective::Post.posts(user: current_user, unpublished: admin, archived: admin)
       @post = @posts.find(params[:id])
 
       if @post.respond_to?(:roles_permit?)
@@ -45,10 +47,11 @@ module Effective
 
       EffectiveResources.authorize!(self, :show, @post)
 
-      if EffectiveResources.authorized?(self, :admin, :effective_posts)
+      if admin 
         flash.now[:warning] = [
           'Hi Admin!',
           ('You are viewing a hidden post.' unless @post.published?),
+          ('You are viewing an archived post.' if @post.archived?),
           'Click here to',
           ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>edit post settings</a>.")
         ].compact.join(' ')

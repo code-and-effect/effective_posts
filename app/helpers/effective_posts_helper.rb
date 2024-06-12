@@ -71,7 +71,9 @@ module EffectivePostsHelper
   def admin_post_status_badge(post)
     return nil unless EffectiveResources.authorized?(self, :admin, :effective_posts)
 
-    if post.draft?
+    if post.archived?
+      content_tag(:span, 'ARCHIVED', class: 'badge badge-info')
+    elsif post.draft?
       content_tag(:span, 'DRAFT', class: 'badge badge-info')
     elsif post.published? == false
       content_tag(:span, "TO BE PUBLISHED AT #{post.published_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-info')

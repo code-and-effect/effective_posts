@@ -8,7 +8,9 @@ module Effective
 
     attr_accessor :current_user
 
+    acts_as_archived
     acts_as_slugged
+
     log_changes if respond_to?(:log_changes)
     acts_as_tagged if respond_to?(:acts_as_tagged)
     acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
@@ -34,6 +36,7 @@ module Effective
       tags              :text
 
       roles_mask        :integer
+      archived          :boolean
 
       # Event Fields
       start_at          :datetime
@@ -56,17 +59,21 @@ module Effective
     validates :published_at, presence: true, unless: -> { draft? }
     validates :start_at, presence: true, if: -> { category == 'events' }
 
-    scope :drafts, -> { where(draft: true) }
-    scope :published, -> { where(draft: false).where("published_at < ?", Time.zone.now) }
-    scope :unpublished, -> { where(draft: true).or(where("published_at > ?", Time.zone.now)) }
-    scope :with_category, -> (category) { where(category: category) }
+    scope :unarchived, -> { where(archived: false) }
+    scope :archived, -> { where(archived: true) }
+
+    scope :drafts, -> { unarchived.where(draft: true) }
+    scope :published, -> { unarchived.where(draft: false).where("published_at < ?", Time.zone.now) }
+    scope :unpublished, -> { unarchived.where(draft: true).or(where("published_at > ?", Time.zone.now)) }
 
     # Kind of a meta category
-    scope :news, -> { where(category: EffectivePosts.news_categories) }
-    scope :events, -> { where(category: EffectivePosts.event_categories) }
+    scope :news, -> { unarchived.where(category: EffectivePosts.news_categories) }
+    scope :events, -> { unarchived.where(category: EffectivePosts.event_categories) }
+
+    scope :with_category, -> (category) { where(category: category) } # Don't add unarchived here
 
     scope :deep, -> { 
-      base = with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds 
+      base = with_attached_image.with_rich_text_excerpt_and_embeds.with_rich_text_body_and_embeds 
       base = base.includes(:pg_search_document) if defined?(PgSearch)
       base
     }
@@ -78,7 +85,7 @@ module Effective
       limit(per_page).offset(offset)
     }
 
-    scope :posts, -> (user: nil, category: nil, unpublished: false) {
+    scope :posts, -> (user: nil, category: nil, unpublished: false, archived: false) {
       scope = all.deep.order(published_at: :desc)
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
@@ -93,6 +100,10 @@ module Effective
 
       unless unpublished
         scope = scope.published
+      end
+
+      unless archived
+        scope = scope.unarchived
       end
 
       scope
