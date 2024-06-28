@@ -13,8 +13,6 @@ class EffectivePostsMailerPreview < ActionMailer::Preview
     post = Effective::Post.new(
       title: 'An example post',
       category: EffectivePosts.categories.first.presence || 'posts',
-      published_at: Time.zone.now,
-      draft: true,
       body: 'This is a new post that has been submitted by a public user.'
     )
   end

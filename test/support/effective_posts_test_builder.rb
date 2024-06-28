@@ -9,8 +9,7 @@ module EffectivePostsTestBuilder
       body: "<p>Really good body</p>",
       excerpt: "<p>Really good excerpt</p>",
       category: category,
-      draft: false,
-      published_at: Time.zone.now
+      published_start_at: Time.zone.now
     )
   end
 

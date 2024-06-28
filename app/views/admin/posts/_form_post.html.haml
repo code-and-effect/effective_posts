@@ -1,6 +1,20 @@
 = effective_form_with(model: [:admin, post], engine: true) do |f|
   = f.text_field :title, hint: 'The title of your post.'
 
+  -# acts_as_published
+  = f.hide_if(:save_as_draft, true) do
+    .row
+      .col-md-6
+        = f.datetime_field :published_start_at, hint: 'The page will be available starting on this date and time.'
+      .col-md-6
+        = f.datetime_field :published_end_at, hint: 'The page will no longer be available after this date and time. Leave blank for no end date.', date_linked: false
+
+  = f.check_box :save_as_draft, label: "Save as a draft. It will not appear on the website and can only be accessed by admin users."
+
+  = f.text_field :description,
+    hint: "150 character summary. Appears on Google search results underneath the post title. ",
+    input_html: { maxlength: 150 }
+
   - if f.object.persisted? || f.object.errors.include?(:slug)
     - current_url = effective_posts.post_path(f.object)
 
@@ -11,8 +25,6 @@
     = f.article_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
   - else
     = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-
-  = f.text_field :description, hint: 'The content of the post meta tags.', maxlength: 150
 
   - if Array(EffectivePosts.categories).length > 1
     = f.select :category, EffectivePosts.categories
@@ -31,10 +43,6 @@
     = f.rich_text_area :body, hint: 'The main body of your post'
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
-
-  = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
-
-  = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
 
   = f.check_box :archived, label: 'Yes, this post is archived. It will not be displayed.'
 

@@ -7,33 +7,27 @@ class EffectivePostsDatatable < Effective::Datatable
   filters do
     scope :unarchived, label: 'All'
     scope :published
-    scope :unpublished
+    scope :draft
     scope :news
     scope :events
     scope :archived
   end
 
   datatable do
-    order :published_at, :desc
+    order :published_start_at, :desc
 
     bulk_actions_col
 
-    col :published_at
     col :id, visible: false
 
     col :title
     col :slug, visible: false
     col :category, search: { collection: EffectivePosts.categories }
 
-    if EffectivePosts.submissions_enabled
-      col :approved, sql_column: 'NOT(draft)', as: :boolean do |post|
-        post.draft? ? 'No' : 'Yes'
-      end
-
-      col :draft, visible: false
-    else
-      col :draft
-    end
+    col :draft?, as: :boolean, visible: false
+    col :published?, as: :boolean
+    col :published_start_at
+    col :published_end_at
 
     col :archived
 
