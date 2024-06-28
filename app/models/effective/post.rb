@@ -1,5 +1,7 @@
 module Effective
   class Post < ActiveRecord::Base
+    self.table_name = (EffectivePosts.posts_table_name || :posts).to_s
+
     if defined?(PgSearch)
       include PgSearch::Model
 
@@ -8,21 +10,19 @@ module Effective
 
     attr_accessor :current_user
 
-    acts_as_archived
-    acts_as_slugged
+    belongs_to :user, polymorphic: true, optional: true
 
-    log_changes if respond_to?(:log_changes)
-    acts_as_tagged if respond_to?(:acts_as_tagged)
     acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
+    acts_as_archived
+    acts_as_published
+    acts_as_slugged
+    acts_as_tagged if respond_to?(:acts_as_tagged)
+    log_changes if respond_to?(:log_changes)
 
     has_one_attached :image
 
     has_rich_text :excerpt
     has_rich_text :body
-
-    self.table_name = (EffectivePosts.posts_table_name || :posts).to_s
-
-    belongs_to :user, polymorphic: true, optional: true
 
     effective_resource do
       title             :string
@@ -31,8 +31,10 @@ module Effective
       category          :string
       slug              :string
 
-      draft             :boolean
-      published_at      :datetime
+      published_start_at       :datetime
+      published_end_at         :datetime
+      legacy_draft             :boolean       # No longer used. To be removed.
+
       tags              :text
 
       roles_mask        :integer
@@ -56,15 +58,12 @@ module Effective
     validates :title, presence: true, length: { maximum: 255 }
     validates :description, presence: true, length: { maximum: 150 }
     validates :category, presence: true
-    validates :published_at, presence: true, unless: -> { draft? }
     validates :start_at, presence: true, if: -> { category == 'events' }
 
     scope :unarchived, -> { where(archived: false) }
     scope :archived, -> { where(archived: true) }
 
-    scope :drafts, -> { unarchived.where(draft: true) }
-    scope :published, -> { unarchived.where(draft: false).where("published_at < ?", Time.zone.now) }
-    scope :unpublished, -> { unarchived.where(draft: true).or(where("published_at > ?", Time.zone.now)) }
+    scope :for_sitemap, -> { published.unarchived }
 
     # Kind of a meta category
     scope :news, -> { unarchived.where(category: EffectivePosts.news_categories) }
@@ -86,7 +85,7 @@ module Effective
     }
 
     scope :posts, -> (user: nil, category: nil, unpublished: false, archived: false) {
-      scope = all.deep.order(published_at: :desc)
+      scope = all.deep.order(published_start_at: :desc)
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
         if user.present? && user.respond_to?(:roles)
@@ -113,12 +112,8 @@ module Effective
       title.presence || 'New Post'
     end
 
-    def published?
-      !draft? && published_at.present? && published_at < Time.zone.now
-    end
-
     def approved?
-      draft == false
+      published?
     end
 
     def event?
@@ -145,10 +140,11 @@ module Effective
       post.assign_attributes(
         title: post.title + ' (Copy)',
         slug: post.slug + '-copy',
-        draft: true,
         body: body,
         excerpt: excerpt
       )
+
+      post.assign_attributes(published_start_at: nil, published_end_at: nil)
 
       post
     end
@@ -158,7 +154,7 @@ module Effective
     end
 
     def approve!
-      update!(draft: false)
+      update!(published_start_at: Time.zone.now)
     end
 
   end

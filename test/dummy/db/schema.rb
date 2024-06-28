@@ -57,8 +57,9 @@ ActiveRecord::Schema.define(version: 101) do
     t.string "description"
     t.string "category"
     t.string "slug"
-    t.boolean "draft", default: false
-    t.datetime "published_at"
+    t.datetime "published_start_at"
+    t.datetime "published_end_at"
+    t.boolean "legacy_draft", default: false
     t.text "tags"
     t.integer "roles_mask", default: 0
     t.boolean "archived", default: false

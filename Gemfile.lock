@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    effective_posts (2.4.2)
+    effective_posts (2.5.0)
       effective_bootstrap
       effective_datatables
       effective_resources
@@ -123,11 +123,12 @@ GEM
       effective_resources
       rails (>= 3.2.0)
       sassc
-    effective_developer (0.7.6)
+    effective_developer (0.8.2)
       effective_resources
       rails (>= 3.2.0)
-    effective_resources (2.8.7)
-      rails (>= 4.0.0)
+    effective_resources (2.25.3)
+      rails
+      sprockets-rails
     effective_test_bot (1.4.0)
       capybara
       effective_resources

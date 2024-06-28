@@ -10,7 +10,7 @@ module EffectivePostsHelper
     tags = [
       tag(:meta, itemprop: 'author', content: @post.user.to_s),
       tag(:meta, itemprop: 'publisher', content: @post.user.to_s),
-      tag(:meta, itemprop: 'datePublished', content: (@post.published_at || Time.zone.now).strftime('%FT%T%:z')),
+      tag(:meta, itemprop: 'datePublished', content: (@post.published_start_at || Time.zone.now).strftime('%FT%T%:z')),
       tag(:meta, itemprop: 'headline', content: @post.title)
     ].join("\n").html_safe
   end
@@ -61,8 +61,8 @@ module EffectivePostsHelper
   def post_meta(post, date: true, datetime: false, category: true, author: true)
     [
       'Published',
-      ("on #{post.published_at.strftime('%B %d, %Y')}" if date && post.published_at),
-      ("on #{post.published_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime && post.published_at),
+      ("on #{post.published_start_at.strftime('%B %d, %Y')}" if date && post.published_start_at),
+      ("on #{post.published_start_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime && post.published_start_at),
       ("to #{link_to_post_category(post.category)}" if category && Array(EffectivePosts.categories).length > 1),
       ("by #{post.user.to_s.presence || 'Unknown'}" if author && EffectivePosts.post_meta_author && post.user.present?)
     ].compact.join(' ').html_safe
@@ -76,7 +76,7 @@ module EffectivePostsHelper
     elsif post.draft?
       content_tag(:span, 'DRAFT', class: 'badge badge-info')
     elsif post.published? == false
-      content_tag(:span, "TO BE PUBLISHED AT #{post.published_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-info')
+      content_tag(:span, "TO BE PUBLISHED AT #{post.published_start_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-info')
     end
   end
 

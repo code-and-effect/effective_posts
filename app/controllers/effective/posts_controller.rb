@@ -64,7 +64,7 @@ module Effective
 
     # Public user submit a post functionality
     def new
-      @post ||= Effective::Post.new(published_at: Time.zone.now)
+      @post ||= Effective::Post.new
       @page_title = 'New Post'
 
       EffectiveResources.authorize!(self, :new, @post)

@@ -22,10 +22,6 @@
 
   = render partial: '/effective/posts/additional_fields', locals: { post: post, form: f, f: f }
 
-  = f.datetime_field :published_at, label: 'Publish date', hint: 'When should this be displayed on the website.'
-
-  = f.check_box :draft, hint: 'Save this post as a draft. It will not be accessible on the website.'
-
   - if defined?(EffectiveArticleEditor)
     = f.article_editor :body, hint: 'The main body of your post'
   - else
