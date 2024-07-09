@@ -85,7 +85,7 @@ module Effective
     }
 
     scope :posts, -> (user: nil, category: nil, unpublished: false, archived: false) {
-      scope = all.deep.order(published_start_at: :desc)
+      scope = all.deep.order(Arel.sql("published_start_at DESC NULLS LAST"))
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
         if user.present? && user.respond_to?(:roles)
