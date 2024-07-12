@@ -31,7 +31,7 @@ class EffectivePostsDatatable < Effective::Datatable
 
     col :archived
 
-    col :start_at
+    col :start_at, visible: EffectivePosts.categories.include?('Events')
     col :end_at, visible: false
     col :location, visible: false
     col :created_at, label: 'Submitted at', visible: false
