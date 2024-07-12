@@ -6,4 +6,4 @@
     = admin_post_status_badge(post)
 
   .post-content.post-excerpt
-    = post.excerpt
+    = post.excerpt.presence || post.body

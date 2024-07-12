@@ -82,7 +82,8 @@ module EffectivePostsHelper
 
   # All other options are passed to the link_to 'Read more'
   def post_excerpt(post, label: 'Continue reading')
-    (post.excerpt.to_s + readmore_link(post, label: label)).html_safe
+    content = post.excerpt.presence || post.body.presence
+    (content.to_s + readmore_link(post, label: label)).html_safe
   end
 
   def read_more_link(post, options = {})
