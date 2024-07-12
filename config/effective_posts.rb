@@ -41,6 +41,12 @@ EffectivePosts.setup do |config|
   # Display a file upload field when the admin creates a new post to collect a post.image
   config.use_active_storage = true
 
+  # Display the google search results description field on admin form
+  config.use_description = true
+
+  # Display the excerpt field on admin form
+  config.use_excerpt = true
+
   # Submissions
   # Allow users to submit posts (optionally for approval) to display on the website
   config.submissions_enabled = true

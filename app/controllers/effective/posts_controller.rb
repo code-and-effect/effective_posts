@@ -58,7 +58,7 @@ module Effective
       end
 
       @page_title ||= @post.title
-      @meta_description ||= @post.description
+      @meta_description ||= (@post.description.presence || @post.title)
       @canonical_url ||= effective_posts.post_url(@post)
     end
 

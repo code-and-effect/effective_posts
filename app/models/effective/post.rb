@@ -55,8 +55,8 @@ module Effective
       self.user ||= current_user
     end
 
-    validates :title, presence: true, length: { maximum: 255 }
-    validates :description, presence: true, length: { maximum: 150 }
+    validates :title, presence: true
+    validates :description, length: { maximum: 150 }
     validates :category, presence: true
     validates :start_at, presence: true, if: -> { category == 'events' }
 

@@ -1,41 +1,40 @@
 = effective_form_with(model: [:admin, post], engine: true) do |f|
   = f.text_field :title, hint: 'The title of your post.'
 
+  - if Array(EffectivePosts.categories).length > 1
+    = f.select :category, EffectivePosts.categories
+  - else
+    = f.hidden_field :category, value: (EffectivePosts.categories.first || 'posts')
+
   -# acts_as_published
   = f.hide_if(:save_as_draft, true) do
     .row
       .col-md-6
-        = f.datetime_field :published_start_at, hint: 'The page will be available starting on this date and time.'
+        = f.datetime_field :published_start_at, hint: 'The page will be available starting on this date and time. Leave blank to publish immediately.'
       .col-md-6
         = f.datetime_field :published_end_at, hint: 'The page will no longer be available after this date and time. Leave blank for no end date.', date_linked: false
 
   = f.check_box :save_as_draft, label: "Save as a draft. It will not appear on the website and can only be accessed by admin users."
 
-  = f.text_field :description,
-    hint: "150 character summary. Appears on Google search results underneath the post title. ",
-    input_html: { maxlength: 150 }
-
+  - # acts_as_slugged
   - if f.object.persisted? || f.object.errors.include?(:slug)
     - current_url = effective_posts.post_path(f.object)
 
     = f.text_field :slug, required: f.object.persisted?,
       hint: "The slug controls this post's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This post is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url && f.object.slug.present? }".html_safe
 
-  - if defined?(EffectiveArticleEditor)
-    = f.article_editor :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-  - else
-    = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages.'
-
-  - if Array(EffectivePosts.categories).length > 1
-    = f.select :category, EffectivePosts.categories
-  - else
-    = f.hidden_field :category, value: (EffectivePosts.categories.first || 'posts')
-
-  - if f.object.class.respond_to?(:acts_as_tagged?)
-    = render 'effective/tags/fields', f: f
+  - if EffectivePosts.use_description
+    = f.text_field :description, input_html: { maxlength: 150 },
+      hint: "150 character summary. Appears on Google search results underneath the post title. Leave blank to use post title."
 
   - if EffectivePosts.use_active_storage
     = f.file_field :image, hint: 'An image for your post'
+
+  - if EffectivePosts.use_excerpt
+    - if defined?(EffectiveArticleEditor)
+      = f.article_editor :excerpt, hint: 'Will be used for the post excerpt on index pages. Leave blank to use the body instead.'
+    - else
+      = f.rich_text_area :excerpt, hint: 'Will be used for the post excerpt on index pages. Leave blank to use the body instead.'
 
   - if defined?(EffectiveArticleEditor)
     = f.article_editor :body, hint: 'The main body of your post'
