@@ -27,9 +27,15 @@ module Effective
         @posts = @posts.where(search) if search.present?
       end
 
+      if @category.present?
+        @page_title = @category.to_s
+      else
+        @page_title ||= view_context.posts_name_label
+      end
+
       EffectiveResources.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= [(@category || 'Blog').to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
+      @page_title ||= [(@category || view_context.posts_name_label).to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
       @canonical_url ||= helpers.effective_post_category_url(params[:category], page: params[:page])
     end
 

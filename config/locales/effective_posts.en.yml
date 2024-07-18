@@ -1,0 +1,7 @@
+en:
+  effective_posts:
+    name: 'Blog'
+
+  activerecord:
+    models:
+      effective/post: 'Post'

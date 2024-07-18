@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 module Effective
   class Post < ActiveRecord::Base
     self.table_name = (EffectivePosts.posts_table_name || :posts).to_s
 
     if defined?(PgSearch)
       include PgSearch::Model
-
       multisearchable against: [:body]
     end
 

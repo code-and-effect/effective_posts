@@ -1,9 +1,18 @@
-.effective-post
-  %h2.post-title= link_to post, effective_post_path(post)
+.col.effective-post.mb-5
+  - if EffectivePosts.categories.length > 1 && post.category.present?
+    = badge_to_post_category(post.category)
 
-  %p.post-meta.text-muted
+  - if EffectivePosts.use_active_storage && post.image.present?
+    = link_to effective_posts.post_path(post) do
+      = image_tag url_for(post.image), class: "effective-posts-image d-none d-lg-flex align-self-start mb-2", alt: post.title, width: "350", height: "220"
+
+  .effective-posts-meta.mb-2
     = post_meta(post, author: false)
     = admin_post_status_badge(post)
 
-  .post-content.post-excerpt
-    = post.excerpt.presence || post.body
+  %h2.effective-posts-title= link_to post, effective_post_path(post)
+
+  - if EffectivePosts.use_excerpt && post.excerpt.present?
+    .effective-posts-excerpt
+      = post.excerpt
+

@@ -26,8 +26,8 @@ class EffectivePostsDatatable < Effective::Datatable
 
     col :draft?, as: :boolean, visible: false
     col :published?, as: :boolean
-    col :published_start_at
-    col :published_end_at
+    col :published_start_at, label: "Published start"
+    col :published_end_at, label: "Published end"
 
     col :archived
 
