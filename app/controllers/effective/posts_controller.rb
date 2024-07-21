@@ -58,8 +58,7 @@ module Effective
           'Hi Admin!',
           ('You are viewing a hidden post.' unless @post.published?),
           ('You are viewing an archived post.' if @post.archived?),
-          'Click here to',
-          ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>edit post settings</a>.")
+          ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>Edit this post</a>.")
         ].compact.join(' ')
       end
 
