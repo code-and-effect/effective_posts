@@ -2,7 +2,7 @@
   - if EffectivePosts.categories.length > 1 && post.category.present?
     = badge_to_post_category(post.category)
 
-  - if EffectivePosts.use_active_storage && post.image.present?
+  - if EffectivePosts.use_active_storage && post.image && post.image.attached?
     = link_to effective_posts.post_path(post) do
       = image_tag url_for(post.image), class: "effective-posts-image d-none d-lg-flex align-self-start mb-2", alt: post.title, width: "350", height: "220"
 
