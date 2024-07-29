@@ -1,12 +1,14 @@
 = render 'layout' do
   .effective-post
-    %h1.post-title= link_to @post, effective_post_path(@post)
-
-    %p.post-meta.text-muted
+    .effective-posts-meta.mb-2
       = post_meta(@post, author: false)
       = admin_post_status_badge(@post)
 
+    %h1.effective-post-title.mb-4= @page_title
+
     = render 'effective/posts/event', post: @post
 
-    .post-body.post-content
+    .effective-posts-body.mb-5
       = @post.body
+
+  = link_to("&larr; #{posts_name_label}" .html_safe, effective_posts.posts_path, class: "btn btn-secondary my-4")

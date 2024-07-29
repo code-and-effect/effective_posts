@@ -2,6 +2,21 @@ require 'cgi'
 
 module EffectivePostsHelper
 
+  # Posts
+  def posts_name_label
+    et('effective_posts.name')
+  end
+
+  # Post
+  def post_label
+    et(Effective::Post)
+  end
+
+  # Posts
+  def posts_label
+    ets(Effective::Post)
+  end
+
   def effective_posts_header_tags
     return unless @post && @post.kind_of?(Effective::Post) && @post.persisted? && @post.published?
 
@@ -54,17 +69,20 @@ module EffectivePostsHelper
     link_to(category.to_s.titleize, effective_post_category_path(category), title: category.to_s.titleize)
   end
 
+  def badge_to_post_category(category, options = {})
+    category = category.to_s.downcase
+    link_to(category.to_s.titleize, effective_post_category_path(category), title: category.to_s.titleize, class: "badge badge-primary badge-post mb-2 effective-posts-#{category.parameterize}")
+  end
+
   def render_post(post)
     render(partial: 'effective/posts/post', locals: { post: post })
   end
 
   def post_meta(post, date: true, datetime: false, category: true, author: true)
     [
-      'Published',
-      ("on #{post.published_start_at.strftime('%B %d, %Y')}" if date && post.published_start_at),
-      ("on #{post.published_start_at.strftime('%B %d, %Y at %l:%M %p')}" if datetime && post.published_start_at),
-      ("to #{link_to_post_category(post.category)}" if category && Array(EffectivePosts.categories).length > 1),
-      ("by #{post.user.to_s.presence || 'Unknown'}" if author && EffectivePosts.post_meta_author && post.user.present?)
+      ("#{post.published_start_at.strftime('%A, %B %d, %Y')}" if date && post.published_start_at),
+      ("#{post.published_start_at.strftime('%A, %B %d, %Y · %l:%M%P')}" if datetime && post.published_start_at),
+      ("#{post.user.to_s.presence || 'Unknown'}" if author && EffectivePosts.post_meta_author && post.user.present?)
     ].compact.join(' ').html_safe
   end
 

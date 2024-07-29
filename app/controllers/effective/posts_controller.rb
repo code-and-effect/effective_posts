@@ -27,9 +27,15 @@ module Effective
         @posts = @posts.where(search) if search.present?
       end
 
+      if @category.present?
+        @page_title = @category.to_s
+      else
+        @page_title ||= view_context.posts_name_label
+      end
+
       EffectiveResources.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= [(@category || 'Blog').to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
+      @page_title ||= [(@category || view_context.posts_name_label).to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
       @canonical_url ||= helpers.effective_post_category_url(params[:category], page: params[:page])
     end
 
@@ -52,8 +58,7 @@ module Effective
           'Hi Admin!',
           ('You are viewing a hidden post.' unless @post.published?),
           ('You are viewing an archived post.' if @post.archived?),
-          'Click here to',
-          ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>edit post settings</a>.")
+          ("<a href='#{effective_posts.edit_admin_post_path(@post)}' class='alert-link'>Edit this post</a>.")
         ].compact.join(' ')
       end
 
