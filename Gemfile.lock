@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    effective_posts (2.6.2)
+    effective_posts (2.7.1)
       effective_bootstrap
       effective_datatables
       effective_resources
