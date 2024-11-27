@@ -89,11 +89,7 @@ module Effective
       scope = all.deep.order(arel_table[:published_start_at].desc.nulls_last)
 
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
-        if user.present? && user.respond_to?(:roles)
-          scope = scope.for_role(user.roles)
-        else
-          scope = scope.for_role([])
-        end
+        scope = scope.for_role(user&.roles)
       end
 
       if category.present?
