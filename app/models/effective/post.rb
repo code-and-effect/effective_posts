@@ -91,6 +91,8 @@ module Effective
       if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
         if user.present? && user.respond_to?(:roles)
           scope = scope.for_role(user.roles)
+        else
+          scope = scope.for_role([])
         end
       end
 
