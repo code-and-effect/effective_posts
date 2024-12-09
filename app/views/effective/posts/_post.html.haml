@@ -8,6 +8,7 @@
 
   .effective-posts-meta.mb-2
     = post_meta(post, author: false)
+    = post_status_badge(post)
     = admin_post_status_badge(post)
 
   %h2.effective-posts-title= link_to post, effective_post_path(post)

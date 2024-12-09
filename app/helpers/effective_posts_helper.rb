@@ -86,15 +86,21 @@ module EffectivePostsHelper
     ].compact.join(' ').html_safe
   end
 
+  def post_status_badge(post)
+    post.roles.map do |role|
+      content_tag(:span, "#{role.to_s.upcase} ONLY", class: 'badge badge-secondary')
+    end.join(' ').html_safe
+  end
+
   def admin_post_status_badge(post)
     return nil unless EffectiveResources.authorized?(self, :admin, :effective_posts)
 
     if post.archived?
-      content_tag(:span, 'ARCHIVED', class: 'badge badge-info')
+      content_tag(:span, 'ARCHIVED', class: 'badge badge-secondary')
     elsif post.draft?
-      content_tag(:span, 'DRAFT', class: 'badge badge-info')
+      content_tag(:span, 'NOT PUBLISHED', class: 'badge badge-danger')
     elsif post.published? == false
-      content_tag(:span, "TO BE PUBLISHED AT #{post.published_start_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-info')
+      content_tag(:span, "TO BE PUBLISHED AT #{post.published_start_at&.strftime('%F %H:%M') || 'LATER'}", class: 'badge badge-danger')
     end
   end
 

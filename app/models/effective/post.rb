@@ -88,9 +88,10 @@ module Effective
     scope :posts, -> (user: nil, category: nil, unpublished: false, archived: false) {
       scope = all.deep.order(arel_table[:published_start_at].desc.nulls_last)
 
-      if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
-        scope = scope.for_role(user&.roles)
-      end
+      # We include member only posts for all users.
+      # if defined?(EffectiveRoles) && EffectivePosts.use_effective_roles
+      #   scope = scope.for_role(user&.roles)
+      # end
 
       if category.present?
         scope = scope.with_category(category)

@@ -28,6 +28,7 @@ class EffectivePostsDatatable < Effective::Datatable
     col :published?, as: :boolean
     col :published_start_at, label: "Published start"
     col :published_end_at, label: "Published end"
+    col :roles
 
     col :archived
 
