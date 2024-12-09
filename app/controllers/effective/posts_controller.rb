@@ -47,10 +47,6 @@ module Effective
       @posts ||= Effective::Post.posts(user: current_user, unpublished: admin, archived: admin)
       @post = @posts.find(params[:id])
 
-      if @post.respond_to?(:roles_permit?)
-        raise Effective::AccessDenied.new('Access Denied', :show, @post) unless @post.roles_permit?(current_user)
-      end
-
       EffectiveResources.authorize!(self, :show, @post)
 
       if admin 
