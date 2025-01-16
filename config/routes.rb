@@ -1,12 +1,9 @@
 EffectivePosts::Engine.routes.draw do
-  namespace :admin do
-    resources :posts, except: [:show] do
-      post :approve, on: :member
+  acts_as_archived
 
-      post :archive, on: :member
-      post :unarchive, on: :member
-      post :bulk_archive, on: :collection
-      post :bulk_unarchive, on: :collection
+  namespace :admin do
+    resources :posts, except: [:show], concerns: :acts_as_archived do
+      post :approve, on: :member
     end
   end
 
