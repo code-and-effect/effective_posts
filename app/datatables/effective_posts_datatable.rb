@@ -1,9 +1,4 @@
 class EffectivePostsDatatable < Effective::Datatable
-  bulk_actions do
-    bulk_action('Archive selected', effective_posts.bulk_archive_admin_posts_path)
-    bulk_action('Unarchive selected', effective_posts.bulk_unarchive_admin_posts_path)
-  end
-
   filters do
     scope :unarchived, label: 'All'
     scope :published
@@ -15,8 +10,6 @@ class EffectivePostsDatatable < Effective::Datatable
 
   datatable do
     order :published_start_at, :desc
-
-    bulk_actions_col
 
     col :id, visible: false
 
