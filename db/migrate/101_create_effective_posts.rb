@@ -31,5 +31,9 @@ class CreateEffectivePosts < ActiveRecord::Migration[6.0]
       t.datetime :updated_at
       t.datetime :created_at
     end
+
+    add_index :posts, [:user_id, :user_type], if_not_exists: true
+    add_index :posts, [:published_start_at, :published_end_at], if_not_exists: true
+    add_index :posts, :archived, if_not_exists: true
   end
 end
