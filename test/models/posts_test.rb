@@ -8,6 +8,7 @@ class PostsTest < ActiveSupport::TestCase
 
   test 'published? and draft?' do
     post = build_effective_post()
+    post.save!
     assert post.published?
     refute post.draft?
 
@@ -23,13 +24,13 @@ class PostsTest < ActiveSupport::TestCase
     assert Effective::Post.published.include?(post)
     refute Effective::Post.draft.include?(post)
 
-    post.update!(published_end_at: Time.zone.now)
+    post.update!(published_start_at: 2.minutes.ago, published_end_at: 1.minute.ago)
     refute post.published?
     assert post.draft?
     refute Effective::Post.published.include?(post)
     assert Effective::Post.draft.include?(post)
 
-    post.update!(published_end_at: nil)
+    post.update!(published_start_at: Time.zone.now, published_end_at: nil)
     assert post.published?
     refute post.draft?
     assert Effective::Post.published.include?(post)
