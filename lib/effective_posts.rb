@@ -44,11 +44,11 @@ module EffectivePosts
   end
 
   def self.categories
-    Array(config[:categories])
+    Array(config[:categories]) - [nil, false, '']
   end
 
   def self.event_categories
-    Array(config[:event_categories])
+    Array(config[:event_categories]) - [nil, false, '']
   end
 
   def self.not_event_categories
