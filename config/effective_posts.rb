@@ -1,11 +1,13 @@
 EffectivePosts.setup do |config|
   # Every post must have a category
   # Each of these categories parameterized value will be a top level route
+  # Include 'Events' here to allow posts in an Events category
   config.categories = ['News', 'Events']
 
-  # Which of the above categories will be considered post.event? 
+  # Which of the above categories will be considered post.event?
   # Used to select the fields on the Admin form
   # Can't be unique. Must be subset of config.categories
+  # Use ['Events'] when config.categories includes 'Events'
   config.event_categories = ['Events']
 
   # Create top level routes for each category
