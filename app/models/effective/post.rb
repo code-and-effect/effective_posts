@@ -79,8 +79,8 @@ module Effective
     }
 
     scope :paginate, -> (page: nil, per_page: EffectivePosts.per_page) {
-      page = (page || 1).to_i
-      offset = [(page - 1), 0].max * per_page
+      page = EffectiveResources.normalize_page(page)
+      offset = (page - 1) * per_page
 
       limit(per_page).offset(offset)
     }

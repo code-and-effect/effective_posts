@@ -6,6 +6,14 @@ class PostsTest < ActiveSupport::TestCase
     assert post.valid?
   end
 
+  test 'paginate rejects malformed page values' do
+    ['03', '2abc', [], {}].each do |page|
+      assert_raises(ActiveRecord::RecordNotFound) do
+        Effective::Post.paginate(page: page, per_page: 10)
+      end
+    end
+  end
+
   test 'published? and draft?' do
     post = build_effective_post()
     post.save!

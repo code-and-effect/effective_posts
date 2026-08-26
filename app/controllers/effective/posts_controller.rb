@@ -9,6 +9,8 @@ module Effective
 
     def index
       @category = EffectivePosts.category(params[:category])
+      page = EffectiveResources.normalize_page(params[:page])
+      page_param = page if params[:page].present?
 
       @posts ||= Effective::Post.posts(
         user: current_user,
@@ -16,7 +18,7 @@ module Effective
         unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts)
       )
 
-      @posts = @posts.paginate(page: params[:page])
+      @posts = @posts.paginate(page: page)
 
       if EffectivePosts.event_categories.include?(@category)
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
@@ -35,8 +37,8 @@ module Effective
 
       EffectiveResources.authorize!(self, :index, Effective::Post)
 
-      @page_title ||= [(@category || view_context.posts_name_label).to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
-      @canonical_url ||= helpers.effective_post_category_url(params[:category], page: params[:page])
+      @page_title ||= [(@category || view_context.posts_name_label).to_s.titleize, (" - Page #{page_param}" if page_param)].compact.join
+      @canonical_url ||= helpers.effective_post_category_url(params[:category], page: page_param)
     end
 
     def show
