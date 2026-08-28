@@ -16,8 +16,6 @@ module Effective
         unpublished: EffectiveResources.authorized?(self, :admin, :effective_posts)
       )
 
-      @posts = @posts.paginate(page: params[:page])
-
       if EffectivePosts.event_categories.include?(@category)
         @posts = @posts.reorder(:start_at).where('start_at > ?', Time.zone.now)
       end
@@ -35,6 +33,16 @@ module Effective
 
       EffectiveResources.authorize!(self, :index, Effective::Post)
 
+      @posts_count = @posts.limit(nil).offset(nil).count
+
+      page = EffectiveResources.validate_page!(
+        params[:page],
+        collection_count: @posts_count,
+        per_page: EffectivePosts.per_page
+      )
+
+      @posts = @posts.paginate(page: page)
+
       @page_title ||= [(@category || view_context.posts_name_label).to_s.titleize, (" - Page #{params[:page]}" if params[:page])].compact.join
       @canonical_url ||= helpers.effective_post_category_url(params[:category], page: params[:page])
     end
@@ -49,7 +57,7 @@ module Effective
 
       EffectiveResources.authorize!(self, :show, @post)
 
-      if admin 
+      if admin
         flash.now[:warning] = [
           'Hi Admin!',
           ('You are viewing a hidden post.' unless @post.published?),
