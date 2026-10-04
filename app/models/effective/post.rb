@@ -64,7 +64,7 @@ module Effective
     scope :unarchived, -> { where(archived: false) }
     scope :archived, -> { where(archived: true) }
 
-    scope :for_sitemap, -> { published.unarchived }
+    scope :for_sitemap, -> { published.unarchived.where(roles_mask: [nil, 0]) }
 
     # Kind of a meta category
     scope :news, -> { unarchived.where(category: EffectivePosts.news_categories) }

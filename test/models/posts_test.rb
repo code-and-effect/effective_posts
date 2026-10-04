@@ -43,4 +43,26 @@ class PostsTest < ActiveSupport::TestCase
     refute Effective::Post.draft.include?(post)
   end
 
+  test 'sitemap includes only public published unarchived posts' do
+    post = build_effective_post()
+    post.save!
+
+    [nil, 0].each do |roles_mask|
+      post.update!(roles_mask: roles_mask)
+      assert Effective::Post.for_sitemap.exists?(post.id)
+    end
+
+    post.update!(roles_mask: 1)
+    refute Effective::Post.for_sitemap.exists?(post.id)
+
+    post.update!(roles_mask: 0, archived: true)
+    refute Effective::Post.for_sitemap.exists?(post.id)
+
+    post.update!(archived: false, published_start_at: 1.day.from_now)
+    refute Effective::Post.for_sitemap.exists?(post.id)
+
+    post.update!(published_start_at: 2.days.ago, published_end_at: 1.day.ago)
+    refute Effective::Post.for_sitemap.exists?(post.id)
+  end
+
 end
